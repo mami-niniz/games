@@ -6,6 +6,7 @@ body {
     min-height: 100vh;
     margin: 0;
     font-family: 'Arial', sans-serif;
+    -webkit-tap-highlight-color: transparent; /* 모바일 터치 시 파란 박스 제거 */
 }
 
 .hidden { display: none !important; }
@@ -38,7 +39,7 @@ h1 {
     margin-bottom: 30px; 
 }
 
-/* 큰 버튼 공통 스타일 (시작, 홈, 재도전) */
+/* 큰 버튼 공통 스타일 */
 .start-btn, .home-btn, .retry-btn {
     width: 100%;
     padding: 15px;
@@ -51,10 +52,22 @@ h1 {
     margin-top: 10px;
     box-shadow: 0 4px 0 rgba(0,0,0,0.15);
 }
-.start-btn:hover, .home-btn:hover, .retry-btn:hover { 
-    transform: translateY(2px);
-    box-shadow: 0 2px 0 rgba(0,0,0,0.15);
+
+/* 마우스가 있는 PC에서만 호버 효과 적용 (모바일 잔상 방지) */
+@media (hover: hover) {
+    .start-btn:hover, .home-btn:hover, .retry-btn:hover { 
+        transform: translateY(2px);
+        box-shadow: 0 2px 0 rgba(0,0,0,0.15);
+    }
+    .start-btn:hover, .home-btn:hover { background-color: #5e35b1; }
+    .retry-btn:hover { background-color: #66bb6a; }
+    .small-restart-btn:hover { background-color: #bdbdbd; text-decoration: underline; }
+    .answer-grid button:hover { background-color: #ede7f6; border-color: #b39ddb; }
 }
+
+/* 터치하는 순간에만 살짝 반응 (모바일용) */
+.start-btn:active, .home-btn:active, .retry-btn:active { transform: translateY(2px); box-shadow: none; }
+.answer-grid button:active { background-color: #ede7f6; }
 
 /* 시작/홈 버튼 (진한 보라색, 흰 글씨) */
 .start-btn, .home-btn { 
@@ -62,34 +75,24 @@ h1 {
     color: white; 
     box-shadow: 0 4px 0 #512da8; 
 }
-.start-btn:hover, .home-btn:hover { 
-    background-color: #5e35b1; 
-}
 
 /* 재도전 (초록 계열) */
 .retry-btn { background-color: #81c784; box-shadow: 0 4px 0 #66bb6a; color: white; }
-.retry-btn:hover { background-color: #66bb6a; }
 
-
-/* 🌟 작고 눈에 안 띄는 회색 다시하기 버튼 (돌아왔습니다!) */
+/* 작고 눈에 안 띄는 회색 다시하기 버튼 */
 .small-restart-btn {
-    background-color: #e0e0e0; /* 아주 연한 회색 */
-    color: #757575; /* 글씨도 회색 */
+    background-color: #e0e0e0;
+    color: #757575;
     border: none;
     border-radius: 5px;
-    font-size: 13px; /* 글씨 작게 */
-    padding: 5px 10px; /* 여백 작게 */
+    font-size: 13px;
+    padding: 5px 10px;
     cursor: pointer;
-    margin-top: 25px; /* 위쪽과 간격 띄우기 */
-    width: auto; /* 꽉 차지 않게 */
+    margin-top: 25px;
+    width: auto;
     display: inline-block;
-    box-shadow: none; /* 그림자 없음 */
+    box-shadow: none;
 }
-.small-restart-btn:hover { 
-    background-color: #bdbdbd; 
-    text-decoration: underline; 
-}
-
 
 /* 게임 화면 요소 */
 .header { display: flex; justify-content: space-between; font-weight: bold; color: black; margin-bottom: 10px; }
@@ -116,9 +119,9 @@ h1 {
     display: flex;
     justify-content: center;
     align-items: center;
-    transition: 0.2s;
+    transition: background-color 0.1s; /* 부드럽게 */
+    outline: none; /* 터치 시 파란 테두리 제거 */
 }
-.answer-grid button:hover { background-color: #ede7f6; border-color: #b39ddb; }
 
 .hanja-text {
     font-size: 45px !important; 
