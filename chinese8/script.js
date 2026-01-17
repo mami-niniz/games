@@ -72,6 +72,7 @@ function startGame() {
     score = 0;
     questionCount = 0;
     
+    // 50개 중 20개 무작위 뽑기
     quizList = hanjaData.sort(() => 0.5 - Math.random()).slice(0, totalQuestions);
 
     introScreen.classList.add("hidden");
@@ -96,7 +97,7 @@ function nextQuestion() {
     scoreDisplay.innerText = `점수: ${score}`;
     resultMessage.innerText = "";
     
-    // 🌟 "힌트" 글자 없이, 큰 한자와 작은 이모지만 표시! 🌟
+    // 🌟 여기가 핵심! "힌트" 글자 없이 한자와 이모지만 넣는 코드 🌟
     mainDisplay.innerHTML = `<div class="hanja-text">${currentQuestion.h}</div><div class="emoji-display">${currentQuestion.img}</div>`;
 
     // 보기 만들기
@@ -121,7 +122,7 @@ function nextQuestion() {
 
 function startTimer() {
     clearInterval(timerInterval);
-    timeLeft = 20; // 시간 20초
+    timeLeft = 20; // 🌟 시간 20초
     updateTimerBar();
     
     timerInterval = setInterval(() => {
