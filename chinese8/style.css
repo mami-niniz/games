@@ -6,7 +6,7 @@ body {
     min-height: 100vh;
     margin: 0;
     font-family: 'Arial', sans-serif;
-    -webkit-tap-highlight-color: transparent; /* 모바일 터치 시 파란 박스 제거 */
+    -webkit-tap-highlight-color: transparent; /* 1. 터치 시 파란 박스 제거 */
 }
 
 .hidden { display: none !important; }
@@ -21,7 +21,6 @@ body {
     border: 5px solid #b39ddb;
 }
 
-/* 텍스트 검정색 유지 */
 h1 { 
     color: black; 
     margin-bottom: 10px; 
@@ -39,7 +38,7 @@ h1 {
     margin-bottom: 30px; 
 }
 
-/* 큰 버튼 공통 스타일 */
+/* 버튼 기본 스타일 */
 .start-btn, .home-btn, .retry-btn {
     width: 100%;
     padding: 15px;
@@ -53,33 +52,37 @@ h1 {
     box-shadow: 0 4px 0 rgba(0,0,0,0.15);
 }
 
-/* 마우스가 있는 PC에서만 호버 효과 적용 (모바일 잔상 방지) */
+/* 🌟 PC에서만 마우스 올렸을 때 반응 (모바일 무시) */
 @media (hover: hover) {
-    .start-btn:hover, .home-btn:hover, .retry-btn:hover { 
-        transform: translateY(2px);
-        box-shadow: 0 2px 0 rgba(0,0,0,0.15);
-    }
-    .start-btn:hover, .home-btn:hover { background-color: #5e35b1; }
-    .retry-btn:hover { background-color: #66bb6a; }
+    .start-btn:hover, .home-btn:hover { background-color: #5e35b1; transform: translateY(2px); }
+    .retry-btn:hover { background-color: #66bb6a; transform: translateY(2px); }
     .small-restart-btn:hover { background-color: #bdbdbd; text-decoration: underline; }
-    .answer-grid button:hover { background-color: #ede7f6; border-color: #b39ddb; }
+    
+    /* 보기 버튼 호버 효과 (PC만) */
+    .answer-grid button:hover { 
+        background-color: #ede7f6; 
+        border-color: #b39ddb; 
+    }
 }
 
-/* 터치하는 순간에만 살짝 반응 (모바일용) */
-.start-btn:active, .home-btn:active, .retry-btn:active { transform: translateY(2px); box-shadow: none; }
-.answer-grid button:active { background-color: #ede7f6; }
+/* 🌟 모바일 안전장치: 버튼이 눌려있어도(Focus) 강제로 흰색 유지 */
+.answer-grid button:focus {
+    background-color: white;
+    border-color: #d1c4e9;
+    outline: none;
+}
 
-/* 시작/홈 버튼 (진한 보라색, 흰 글씨) */
+/* 시작/홈 버튼 색상 */
 .start-btn, .home-btn { 
     background-color: #673ab7; 
     color: white; 
     box-shadow: 0 4px 0 #512da8; 
 }
 
-/* 재도전 (초록 계열) */
+/* 재도전 버튼 */
 .retry-btn { background-color: #81c784; box-shadow: 0 4px 0 #66bb6a; color: white; }
 
-/* 작고 눈에 안 띄는 회색 다시하기 버튼 */
+/* 다시하기 버튼 (작은 회색) */
 .small-restart-btn {
     background-color: #e0e0e0;
     color: #757575;
@@ -94,7 +97,7 @@ h1 {
     box-shadow: none;
 }
 
-/* 게임 화면 요소 */
+/* 게임 화면 레이아웃 */
 .header { display: flex; justify-content: space-between; font-weight: bold; color: black; margin-bottom: 10px; }
 #timer-bar { width: 100%; height: 10px; background-color: #ede7f6; border-radius: 5px; margin-bottom: 20px; overflow: hidden; }
 #timer-fill { height: 100%; background-color: #ba68c8; width: 100%; transition: width 1s linear; }
@@ -103,11 +106,11 @@ h1 {
 #main-display { font-size: 80px; font-weight: bold; color: black; line-height: 1.2; }
 #sub-display { font-size: 24px; color: black; margin-top: 10px; }
 
-/* 보기 버튼 스타일 */
+/* 보기 버튼 (정답/오답 제외하고는 무조건 흰색) */
 .answer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .answer-grid button { 
     padding: 15px; 
-    background-color: white; 
+    background-color: white; /* 기본 흰색 */
     border: 2px solid #d1c4e9;
     border-radius: 10px; 
     font-size: 20px; 
@@ -119,16 +122,17 @@ h1 {
     display: flex;
     justify-content: center;
     align-items: center;
-    transition: background-color 0.1s; /* 부드럽게 */
-    outline: none; /* 터치 시 파란 테두리 제거 */
+    outline: none; /* 파란 테두리 제거 */
 }
 
+/* 한자 폰트 */
 .hanja-text {
     font-size: 45px !important; 
     font-family: 'Malgun Gothic', 'Dotum', sans-serif !important; 
     line-height: 1;
 }
 
+/* 정답/오답 (가장 강력하게 적용 !important) */
 .correct { background-color: #c8e6c9 !important; border-color: #81c784 !important; color: #2e7d32 !important; }
 .wrong { background-color: #ffcdd2 !important; border-color: #e57373 !important; color: #c62828 !important;}
 #result-message { margin-top: 15px; height: 24px; font-weight: bold; font-size: 18px; }
