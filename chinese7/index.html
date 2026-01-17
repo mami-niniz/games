@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>깐깐한 다람쥐 샘의 7급 한자 교실</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="game-box" id="intro-screen">
+        <h1>🐿️ 깐깐한 다람쥐 샘의<br>7급 한자(100자) 교실</h1>
+        
+        <img src="dotori.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/235/235349.png'" alt="도도리 선생님" id="main-image">
+        
+        <p class="intro-text">"어디 보자... 30문제를 다 맞힐 수 있겠나?<br>도토리만큼 작은 실수도 용납 못 한다!"</p>
+        <button onclick="startGame()" class="start-btn">📝 네! 자신 있습니다!</button>
+    </div>
+
+    <div class="game-box hidden" id="game-screen">
+        <div class="header">
+            <span id="q-count">문제 1 / 30</span>
+            <span id="score-display">점수: 0</span>
+        </div>
+        
+        <div id="timer-bar"><div id="timer-fill"></div></div>
+
+        <div class="question-area">
+            <div id="main-display">문제</div>
+        </div>
+
+        <div class="answer-grid" id="answer-buttons">
+            <button onclick="checkAnswer(0)">보기 1</button>
+            <button onclick="checkAnswer(1)">보기 2</button>
+            <button onclick="checkAnswer(2)">보기 3</button>
+            <button onclick="checkAnswer(3)">보기 4</button>
+        </div>
+
+        <div id="result-message"></div>
+
+        <button onclick="startGame()" class="small-restart-btn">🔄 처음부터 다시하기</button>
+    </div>
+
+    <div class="game-box hidden" id="result-screen">
+        <h1>📜 시험 결과 📜</h1>
+        <div class="emoji-icon">🌰</div>
+        
+        <h2 id="final-score-text">총점: 100점</h2>
+        <p id="final-comment">참 잘했어요!</p>
+
+        <button onclick="startGame()" class="retry-btn">🔄 다시 도전하기</button>
+        <button onclick="goToIntro()" class="home-btn">🏠 도도리 굴(처음)로</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

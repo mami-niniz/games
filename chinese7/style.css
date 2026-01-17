@@ -1,0 +1,91 @@
+body {
+    background-color: #f3e5f5; /* 8급 연보라 배경 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.hidden { display: none !important; }
+
+.game-box {
+    background-color: white;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    text-align: center;
+    width: 360px;
+    border: 5px solid #b39ddb; /* 8급 보라색 테두리 */
+}
+
+h1 { color: black; margin-bottom: 10px; word-break: keep-all; font-size: 22px; }
+#main-image { width: 140px; margin: 15px auto; display: block; }
+.intro-text, #final-score-text, #final-comment { font-size: 18px; color: black; font-weight: bold; margin-bottom: 30px; }
+.emoji-icon { font-size: 80px; margin: 20px 0; }
+
+/* 버튼 공통 */
+.start-btn, .home-btn, .retry-btn, .small-restart-btn {
+    width: 100%; padding: 15px; border: none; border-radius: 12px;
+    font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.2s;
+    margin-top: 10px; color: white; box-shadow: 0 4px 0 rgba(0,0,0,0.15);
+}
+
+@media (hover: hover) {
+    .start-btn:hover, .home-btn:hover { background-color: #5e35b1; transform: translateY(2px); }
+    .retry-btn:hover { background-color: #66bb6a; transform: translateY(2px); }
+    .small-restart-btn:hover { background-color: #bdbdbd; text-decoration: underline; }
+    .answer-grid button:hover { background-color: #ede7f6; border-color: #b39ddb; }
+}
+
+.answer-grid button:focus { background-color: white; border-color: #d1c4e9; outline: none; }
+
+/* 버튼 색상 */
+.start-btn, .home-btn { background-color: #673ab7; box-shadow: 0 4px 0 #512da8; }
+.retry-btn { background-color: #81c784; box-shadow: 0 4px 0 #66bb6a; }
+.small-restart-btn {
+    background-color: #e0e0e0; color: #757575; border: none; border-radius: 5px;
+    font-size: 13px; padding: 5px 10px; cursor: pointer; margin-top: 25px;
+    width: auto; display: inline-block; box-shadow: none;
+}
+
+/* 게임 화면 */
+.header { display: flex; justify-content: space-between; font-weight: bold; color: black; margin-bottom: 10px; }
+#timer-bar { width: 100%; height: 10px; background-color: #ede7f6; border-radius: 5px; margin-bottom: 20px; overflow: hidden; }
+#timer-fill { height: 100%; background-color: #ba68c8; width: 100%; transition: width 1s linear; }
+.question-area { margin-bottom: 25px; background-color: #f3e5f5; padding: 20px; border-radius: 15px; border: 2px dashed #d1c4e9; }
+
+/* 문제 영역 정렬 (세로) */
+#main-display { 
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    color: black; line-height: 1.2; 
+}
+
+/* 한자 폰트 */
+.hanja-text { font-size: 80px; font-weight: bold; font-family: 'Malgun Gothic', 'Dotum', sans-serif !important; }
+
+/* 🌟 이모지 아이콘 스타일 (수정됨!) 🌟 */
+.emoji-display {
+    font-size: 28px; /* 🔥 크기를 28px로 아주 작게 줄였습니다! 🔥 */
+    margin-top: 15px; /* 한자와의 간격 */
+    animation: bounce 1s infinite alternate; /* 둥실둥실 애니메이션 */
+}
+
+@keyframes bounce {
+    from { transform: translateY(0); }
+    to { transform: translateY(5px); }
+}
+
+.answer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.answer-grid button { 
+    padding: 15px; background-color: white; border: 2px solid #d1c4e9;
+    border-radius: 10px; font-size: 20px; font-weight: bold; color: black; 
+    cursor: pointer; word-break: keep-all; 
+    min-height: 70px; display: flex; justify-content: center; align-items: center; outline: none;
+}
+
+.correct { background-color: #c8e6c9 !important; border-color: #81c784 !important; color: #2e7d32 !important; }
+.wrong { background-color: #ffcdd2 !important; border-color: #e57373 !important; color: #c62828 !important;}
+#result-message { margin-top: 15px; height: 24px; font-weight: bold; font-size: 18px; }
