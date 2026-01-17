@@ -32,7 +32,7 @@ const hanjaData = [
 let currentQuestion = {};
 let score = 0;
 let questionCount = 0;
-const totalQuestions = 20; // 50문제 중 20문제 출제
+const totalQuestions = 20; 
 let timerInterval;
 let timeLeft;
 let isAnswering = false;
@@ -72,7 +72,6 @@ function startGame() {
     score = 0;
     questionCount = 0;
     
-    // 50개 중 20개 무작위 뽑기
     quizList = hanjaData.sort(() => 0.5 - Math.random()).slice(0, totalQuestions);
 
     introScreen.classList.add("hidden");
@@ -97,7 +96,7 @@ function nextQuestion() {
     scoreDisplay.innerText = `점수: ${score}`;
     resultMessage.innerText = "";
     
-    // 🌟 한자와 지정된 이모지 표시 (8급 전용)
+    // 🌟 "힌트" 글자 없이, 큰 한자와 작은 이모지만 표시! 🌟
     mainDisplay.innerHTML = `<div class="hanja-text">${currentQuestion.h}</div><div class="emoji-display">${currentQuestion.img}</div>`;
 
     // 보기 만들기
@@ -112,7 +111,7 @@ function nextQuestion() {
 
     const buttons = document.querySelectorAll(".answer-grid button");
     buttons.forEach((btn, index) => {
-        btn.innerText = answers[index].m; // m: 뜻음
+        btn.innerText = answers[index].m; 
         btn.className = ""; 
         btn.onclick = () => checkAnswer(answers[index], btn);
     });
@@ -122,7 +121,7 @@ function nextQuestion() {
 
 function startTimer() {
     clearInterval(timerInterval);
-    timeLeft = 20; // 🌟 시간 20초로 변경!
+    timeLeft = 20; // 시간 20초
     updateTimerBar();
     
     timerInterval = setInterval(() => {
@@ -136,11 +135,10 @@ function startTimer() {
 }
 
 function updateTimerBar() {
-    // 🌟 20초 기준으로 바 계산
     const percentage = (timeLeft / 20) * 100;
     timerFill.style.width = `${percentage}%`;
     if (percentage < 30) timerFill.style.backgroundColor = "red";
-    else timerFill.style.backgroundColor = "#ba68c8"; // 보라색
+    else timerFill.style.backgroundColor = "#ba68c8"; 
 }
 
 function checkAnswer(selectedItem, btnElement) {
