@@ -1,10 +1,11 @@
-/* 🐧 펭귄 박사님의 나눗셈 교실 🐧 */
+/* 🐧 펭귄 박사님의 나눗셈 교실 (버그 수정판) 🐧 */
 
-let divisor = 0; // 나누는 수 (예: 2단이면 2)
+let divisor = 0; // 나누는 수
 let answer = 0;  // 정답 (몫)
 let dividend = 0; // 나뉘는 수 (문제)
 let score = 0, timeLeft = 10, timerInterval, selectedDan = 'random';
 let questionCount = 0; const totalQuestions = 10;
+let isProcessing = false; // 🚫 중복 클릭 방지용 잠금 장치
 
 const introScreen = document.getElementById("intro-screen");
 const gameScreen = document.getElementById("game-screen");
@@ -21,7 +22,7 @@ const finalComment = document.getElementById("final-comment");
 
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-// 🔊 소리 함수들 (동일)
+// 🔊 소리 함수들
 function playTone(freq, type, duration) {
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
@@ -49,7 +50,6 @@ function startGame(dan) {
     resultScreen.classList.add("hidden");
     gameScreen.classList.remove("hidden");
     
-    // 제목 설정 (나눗셈)
     if (dan === 'random') currentDanTitle.innerText = "랜덤 나눗셈";
     else currentDanTitle.innerText = `${dan}단 나눗셈`;
     
@@ -62,9 +62,12 @@ function endGame() {
     clearInterval(timerInterval);
     gameScreen.classList.add("hidden");
     resultScreen.classList.remove("hidden");
+    
+    // 점수가 100점을 넘지 않도록 안전장치 추가
+    if (score > 100) score = 100;
+
     finalScoreText.innerText = `총점: ${score}점`;
     
-    // 펭귄 박사님의 멘트
     if (score === 100) finalComment.innerText = "🐧 꽥! 완벽해! 자네는 얼음왕국 수학 천재야!";
     else if (score >= 80) finalComment.innerText = "❄️ 아주 훌륭해! 물고기 10마리 주겠네.";
     else if (score >= 50) finalComment.innerText = "🐟 노력하면 더 잘할 수 있어!";
@@ -90,6 +93,8 @@ function startTimer() {
 }
 
 function timeOut() {
+    if (isProcessing) return; // 이미 처리 중이면 무시
+    isProcessing = true; // 잠금
     playDdaeng(); resultMessage.innerText = "⏰ 땡! 얼어버렸습니다!";
     resultMessage.style.color = "red"; userInput.value = ""; 
     setTimeout(nextStage, 2000);
@@ -100,27 +105,24 @@ function nextStage() {
     else makeQuestion(); 
 }
 
-// 🧠 문제 만들기 (나눗셈 로직)
+// 🧠 문제 만들기
 function makeQuestion() {
     if (audioCtx.state === 'suspended') audioCtx.resume();
-    clearInterval(timerInterval); resultMessage.innerText = ""; 
+    clearInterval(timerInterval); 
+    resultMessage.innerText = ""; 
+    isProcessing = false; // 🔓 잠금 해제 (새 문제 풀 수 있음)
+
     questionCount++; qCountDisplay.innerText = `${questionCount}`; 
     
-    // 1. 몇 단(나누는 수)으로 할지 결정
     if (selectedDan === 'random') {
-        divisor = Math.floor(Math.random() * 8) + 2; // 2~9 중 랜덤
+        divisor = Math.floor(Math.random() * 8) + 2; 
     } else {
-        divisor = selectedDan; // 선택한 단 (예: 9)
+        divisor = selectedDan; 
     }
 
-    // 2. 정답(몫)을 먼저 결정 (1~9)
     answer = Math.floor(Math.random() * 9) + 1;
-
-    // 3. 문제(나뉘는 수) 만들기: 정답 x 나누는 수
-    // 예: 9단(divisor 9), 정답 3(answer 3) -> 문제 27 (27 / 9 = 3)
     dividend = divisor * answer;
     
-    // 화면 표시: 27 ÷ 9 = ?
     questionDisplay.innerText = `${dividend} ÷ ${divisor} = ?`;
     
     userInput.value = ""; userInput.focus();
@@ -128,17 +130,20 @@ function makeQuestion() {
 }
 
 function checkAnswer() {
+    if (isProcessing) return; // 🚫 이미 정답 처리 중이면 버튼 무시!
     if (userInput.value === "") return;
+
     const userAnswer = parseInt(userInput.value);
     
-    // 정답 비교 (사용자 입력값 === 미리 정해둔 answer)
     if (userAnswer === answer) {
+        isProcessing = true; // 🔒 잠금 (중복 점수 방지)
         clearInterval(timerInterval); playDingDongDang();
         resultMessage.innerText = "정답! 🐟 냠냠!";
         resultMessage.style.color = "#00b894"; score += 10;
         scoreBoard.innerText = `점수: ${score}`;
         setTimeout(nextStage, 1000); 
     } else {
+        // 틀렸을 땐 잠그지 않음 (다시 입력 기회 줌)
         playDdaeng(); resultMessage.innerText = "땡! 미끄러졌어요 🐧";
         resultMessage.style.color = "red"; userInput.value = ""; userInput.focus();
     }
