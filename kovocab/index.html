@@ -57,20 +57,21 @@
         
         .front { background: #2196f3; color: white; font-size: 60px; transform: rotateY(0deg); }
         
-        /* ★ 카드 뒷면(뜻) 스타일 개선 */
+        /* ★ 카드 뒷면(뜻) 스타일 - 글자 최대한 키우기 전략 */
         .back { 
             background: white; 
-            color: black; /* 글자색 완전 검정으로 변경 */
+            color: #000; /* 완전 검정 */
             transform: rotateY(180deg); border: 4px solid #2196f3; 
-            font-size: 28px; /* 기본 크기 대폭 확대 (24 -> 28) */
+            font-size: 32px; /* 기본값 더 키움 */
+            font-weight: bold; /* 문장도 굵게! */
             display: flex; align-items: center; justify-content: center; text-align: center; 
-            line-height: 1.4; /* 줄간격 넓힘 */
+            line-height: 1.25; /* 줄간격 좁혀서 글자 공간 확보 */
             overflow-y: auto; 
-            padding: 8px; /* 안쪽 여백 확보 */
+            padding: 4px; /* 여백 최소화 */
         }
         .back::-webkit-scrollbar { display: none; }
 
-        /* 단어는 더 진하고 크게 */
+        /* 단어는 파란색으로 구분 */
         .back.is-word { color: #1565c0; font-weight: 900; } 
 
         table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 16px; }
@@ -83,8 +84,8 @@
             .lvl-btn, .diff-btn { width: 45%; margin: 5px 2px; height: 55px;}
             input[type="text"] { width: 80%; }
             .front { font-size: 40px; }
-            .back { font-size: 18px; border-width: 3px; padding: 4px;}
-            .back.is-word { font-size: 24px; }
+            .back { font-size: 20px; border-width: 3px; padding: 2px;}
+            .back.is-word { font-size: 28px; }
         }
     </style>
 </head>
@@ -220,20 +221,20 @@
                 el.classList.add('card');
                 el.dataset.pairId = card.pairId;
                 
-                // ★ 글자 크기 로직 수정 (더 크게!)
-                let fontSize = '28px'; // 기본값 (기존 22px -> 28px)
+                // ★ 글자 크기 극한으로 키우기
+                let fontSize = '34px'; // 기본값 (기존 28px -> 34px)
                 
                 if(card.type === 'mean') {
                     // 뜻일 때
-                    if(card.text.length > 40) fontSize = '20px';      // 아주 긴 문장
-                    else if(card.text.length > 30) fontSize = '24px'; // 긴 문장
-                    else if(card.text.length > 20) fontSize = '26px'; // 중간 문장
-                    else if(card.text.length > 10) fontSize = '30px'; // 짧은 문장
-                    else fontSize = '36px';                           // 아주 짧은 뜻
+                    if(card.text.length > 40) fontSize = '24px';      // 아주 긴 문장
+                    else if(card.text.length > 30) fontSize = '28px'; // 긴 문장
+                    else if(card.text.length > 20) fontSize = '32px'; // 중간 문장
+                    else if(card.text.length > 10) fontSize = '38px'; // 짧은 문장
+                    else fontSize = '45px';                           // 아주 짧은 뜻
                 } else {
                     // 단어일 때
-                    if(card.text.length > 5) fontSize = '40px';       
-                    else fontSize = '60px';                           
+                    if(card.text.length > 5) fontSize = '42px';       
+                    else fontSize = '65px';                           
                 }
 
                 el.innerHTML = `
