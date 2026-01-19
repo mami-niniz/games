@@ -6,7 +6,7 @@
     <title>곰펜하이머의 단어 방어작전</title>
     <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Jua&display=swap" rel="stylesheet">
     <style>
-        * { box-sizing: border-box; } /* 전체 크기 계산 통일 */
+        * { box-sizing: border-box; }
 
         body { 
             font-family: 'Jua', sans-serif; 
@@ -15,8 +15,6 @@
             text-align: center; 
             margin: 0; 
             padding: 0; 
-            min-height: 100vh;
-            /* ★ 모바일 브라우저 UI 대응 */
             min-height: 100dvh; 
             display: flex;
             flex-direction: column;
@@ -110,16 +108,14 @@
             border-radius: 20px;
         }
 
-        /* ★ 게임 화면 레이아웃 재설계 (Flexbox 사용) */
         #game-screen {
             position: fixed;
             top: 0; left: 0;
             width: 100%;
-            height: 100vh;
-            height: 100dvh; /* 모바일 주소창 대응 */
+            height: 100dvh; 
             overflow: hidden;
             display: none; 
-            flex-direction: column; /* 세로 배치 */
+            flex-direction: column; 
             z-index: 999;
         }
 
@@ -145,10 +141,10 @@
             box-shadow: 0 3px 5px rgba(0,0,0,0.1);
         }
 
-        /* ★ 하늘 영역: 남는 공간을 모두 차지 (flex: 1) */
+        /* 하늘 영역 */
         #sky-area {
             position: relative;
-            flex: 1; /* 높이 유동적 */
+            flex: 1; 
             width: 100%;
             overflow: hidden;
         }
@@ -179,9 +175,9 @@
             z-index: 10;
         }
 
-        /* ★ 컨트롤 영역: 내용물만큼만 높이 차지 (height: auto) */
+        /* 컨트롤 영역 */
         .control-area {
-            position: relative; /* absolute 아님! */
+            position: relative;
             width: 100%;
             height: auto; 
             background: #fff; 
@@ -191,7 +187,7 @@
             align-items: center;
             justify-content: center;
             z-index: 50;
-            padding-bottom: 20px; /* 하단 여백 확보 */
+            padding-bottom: 20px;
             box-shadow: 0 -10px 20px rgba(0,0,0,0.05);
         }
 
@@ -200,7 +196,7 @@
             border-radius: 50%;
             border: 6px solid #81d4fa;
             position: absolute;
-            top: -60px; /* 박스 위로 튀어나오게 */
+            top: -60px; 
             background: #fff;
             z-index: 60;
             object-fit: cover;
@@ -212,7 +208,7 @@
             gap: 15px; 
             width: 95%;
             max-width: 800px;
-            margin-top: 50px; /* 곰돌이 자리 확보 */
+            margin-top: 50px; 
             padding: 0 20px;
         }
 
@@ -247,7 +243,7 @@
         th { background: #e1f5fe; color: #0277bd; }
         .rank-1 { color: #ff6f00; font-size: 1.2em; text-shadow: 1px 1px 0 #ffe0b2; }
         
-        /* ★ 모바일 최적화 (더 꼼꼼하게) */
+        /* ★ 모바일 최적화 (2단 배열 적용) */
         @media (max-width: 650px) {
             .game-box { padding: 25px 20px; margin-top: 20px; }
             .intro-header { flex-direction: column; gap: 10px; margin-bottom: 20px; }
@@ -262,23 +258,22 @@
             .lvl-btn, .diff-btn { padding: 8px 12px; font-size: 16px; margin: 4px; }
             .start-btn { margin-top: 15px; padding: 15px 40px; font-size: 24px; }
 
-            /* 게임 화면 조정 */
+            /* ★ 핵심 수정: 모바일에서도 버튼 2개씩 배치 */
             .answers-grid { 
-                grid-template-columns: 1fr; /* 버튼 한 줄로 */
-                gap: 10px; 
+                grid-template-columns: 1fr 1fr !important; /* 강제 2열 */
+                gap: 8px; 
                 margin-top: 45px;
-                padding: 0 15px;
+                padding: 0 10px; /* 좌우 여백 줄여서 넓게 쓰기 */
+                width: 100%;
             }
-            .ans-btn { padding: 12px; font-size: 24px; }
+            .ans-btn { padding: 15px 5px; font-size: 22px; } /* 버튼 패딩 조절 */
             
-            /* 질문 텍스트 조정 */
             #question-text { margin-top: 10px !important; font-size: 18px !important; margin-bottom: 0px !important;}
             
-            /* 곰돌이 크기 축소 */
+            /* 곰돌이 크기 살짝 줄임 */
             .bear-avatar { width: 90px; height: 90px; top: -45px; border-width: 4px; }
             
-            /* 떨어지는 문장 폰트 */
-            .falling-word { font-size: 16px; padding: 8px 12px; }
+            .falling-word { font-size: 14px !important; padding: 8px 12px; }
             
             .hud { font-size: 18px; padding: 0 15px; top: 10px; }
             .home-btn { font-size: 14px; padding: 5px 10px; }
@@ -335,7 +330,7 @@
 
         <div class="control-area">
             <img src="bear.png" class="bear-avatar" onerror="this.src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Animals/Bear.png'">
-            <div id="question-text" style="margin-top: 50px; font-size: 24px; color: #0277bd;">내려오는 뜻에 맞는 단어는?</div>
+            <div id="question-text" style="margin-top: 40px; font-size: 24px; color: #0277bd;">내려오는 뜻에 맞는 단어는?</div>
             
             <div class="answers-grid" id="answers-box">
                 <button class="ans-btn">보기1</button>
@@ -411,7 +406,7 @@
             document.getElementById('result-screen').classList.add('hidden');
             const gameScreen = document.getElementById('game-screen');
             gameScreen.classList.remove('hidden');
-            gameScreen.style.display = 'flex'; // Flexbox 적용
+            gameScreen.style.display = 'flex'; 
 
             score = 0; life = 5; isGameOver = false; activeWords = [];
             updateHUD();
@@ -537,7 +532,6 @@
             const laser = document.createElement('div');
             laser.className = 'laser';
             const targetTop = targetWord.y;
-            // 레이저 높이 계산: sky-area 높이 - 타겟 위치
             const skyHeight = document.getElementById('sky-area').clientHeight;
             laser.style.height = (skyHeight - targetTop) + "px";
             laser.style.bottom = "0px"; 
