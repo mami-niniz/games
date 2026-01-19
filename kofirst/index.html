@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"> 
     <title>하마의 도전! 초성 골든벨</title>
-    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Jua&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; }
 
         body { 
-            font-family: 'Jua', sans-serif; 
+            font-family: 'Jua', sans-serif; /* 기본 폰트 Jua로 통일 */
             background-color: #1a237e; 
             background-image: linear-gradient(135deg, #1a237e 0%, #283593 100%);
             color: #fff;
@@ -62,11 +62,12 @@
         }
 
         h1 { 
-            font-family: 'Black Han Sans', sans-serif; 
+            font-family: 'Jua', sans-serif; /* 폰트 통일 */
             color: #1a237e; 
-            font-size: 42px; 
+            font-size: 48px; 
             margin: 0;
             text-shadow: 2px 2px 0 #fdd835;
+            line-height: 1.2;
         }
         
         .desc-text { font-size: 20px; color: #555; margin-top: 5px; font-weight: bold;}
@@ -144,10 +145,9 @@
             width: 100%;
             display: flex;
             justify-content: center;
-            margin-top: 40px; /* 하마 들어갈 공간 확보 */
+            margin-top: 40px; 
         }
         
-        /* ★ 하마 위치 수정: 중앙 상단으로 */
         .hippo-char {
             width: 100px;
             height: 100px;
@@ -167,7 +167,7 @@
             border-radius: 15px;
             width: 90%;
             min-height: 250px;
-            padding: 40px 20px 20px 20px; /* 상단 패딩 늘림 */
+            padding: 40px 20px 20px 20px; 
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -177,7 +177,7 @@
         }
 
         .quiz-mean {
-            font-size: 22px;
+            font-size: 24px; /* 폰트 크기 살짝 키움 */
             color: #333;
             margin-bottom: 20px;
             word-break: keep-all;
@@ -185,8 +185,8 @@
         }
 
         .quiz-hint {
-            font-size: 60px; 
-            font-family: 'Black Han Sans', sans-serif;
+            font-size: 64px; 
+            font-family: 'Jua', sans-serif; /* 폰트 통일 */
             color: #1a237e;
             letter-spacing: 5px;
             background: #e8eaf6;
@@ -212,40 +212,44 @@
             border: 4px solid #fdd835;
             border-radius: 15px;
             outline: none;
+            font-family: 'Jua', sans-serif;
         }
         .game-input:focus { border-color: #ffca28; box-shadow: 0 0 10px #ffca28; }
 
         .btn-group { display: flex; gap: 8px; width: 90%; justify-content: center; }
         
+        /* ★ 버튼 스타일 수정 */
         .submit-btn { 
             flex: 2; 
-            background: #1a237e; 
-            color: white; 
-            font-size: 22px; 
+            background: #fdd835; /* 노란색 (강조) */
+            color: #1a237e;      /* 남색 글씨 */
+            font-size: 24px; 
             padding: 12px; 
             border-radius: 10px; 
             border: none; 
             font-family: 'Jua', sans-serif;
             cursor: pointer;
+            box-shadow: 0 4px 0 #fbc02d;
         }
+        .submit-btn:active { transform: translateY(4px); box-shadow: none; }
         
-        /* 힌트 버튼 스타일 */
         .hint-btn {
             flex: 1;
-            background: #fdd835;
-            color: #1a237e;
+            background: #9e9e9e; /* 회색 (덜 강조) */
+            color: white;
             font-size: 20px;
             padding: 12px;
             border-radius: 10px;
             border: none;
             font-family: 'Jua', sans-serif;
             cursor: pointer;
-            font-weight: bold;
+            box-shadow: 0 4px 0 #757575;
         }
+        .hint-btn:active { transform: translateY(4px); box-shadow: none; }
 
         .pass-btn { 
             flex: 1; 
-            background: #9e9e9e; 
+            background: #757575; /* 진한 회색 */
             color: white; 
             font-size: 20px; 
             padding: 12px; 
@@ -253,21 +257,42 @@
             border: none;
             font-family: 'Jua', sans-serif;
             cursor: pointer;
+            box-shadow: 0 4px 0 #616161;
         }
+        .pass-btn:active { transform: translateY(4px); box-shadow: none; }
 
         .shake { animation: shake 0.4s; border-color: #d32f2f !important; color: #d32f2f; }
         @keyframes shake { 0% { transform: translateX(0); } 25% { transform: translateX(-10px); } 50% { transform: translateX(10px); } 75% { transform: translateX(-10px); } 100% { transform: translateX(0); } }
 
-        .rank-table { width: 100%; margin-top: 20px; border-collapse: collapse; font-size: 18px; }
-        .rank-table th { background: #fdd835; padding: 8px; color: #1a237e; }
-        .rank-table td { border-bottom: 1px solid #eee; padding: 8px; color: #333; }
-        .rank-1 { color: #f57f17; font-weight: bold; font-size: 1.1em; }
+        /* 명예의 전당 테이블 수정 (잘 보이게) */
+        .rank-table { width: 100%; margin-top: 20px; border-collapse: separate; border-spacing: 0 5px; font-size: 20px; }
+        
+        .rank-table th { 
+            background: #5d4037; 
+            color: #fff8e1;      
+            padding: 12px; 
+            border-radius: 10px 10px 0 0;
+        }
+        
+        .rank-table td { 
+            background: #8d6e63; 
+            color: white;        
+            padding: 12px; 
+            border-bottom: 1px solid #795548;
+        }
+        
+        .rank-table tr:last-child td:first-child { border-bottom-left-radius: 10px; }
+        .rank-table tr:last-child td:last-child { border-bottom-right-radius: 10px; }
+
+        .rank-1 { color: #ffd54f !important; font-weight: bold; text-shadow: 1px 1px 0 #3e2723; } 
+        .rank-2 { color: #cfd8dc !important; font-weight: bold; } 
+        .rank-3 { color: #ffccbc !important; font-weight: bold; } 
 
         @media (max-width: 600px) {
             .char-img { width: 140px; height: 140px; }
             h1 { font-size: 32px; }
-            .whiteboard { min-height: 200px; padding: 45px 15px 20px 15px; } /* 하마 자리 확보 */
-            .quiz-mean { font-size: 18px; }
+            .whiteboard { min-height: 200px; padding: 45px 15px 20px 15px; } 
+            .quiz-mean { font-size: 20px; }
             .quiz-hint { font-size: 40px; }
             .game-input { width: 90%; font-size: 24px; }
             .btn-group { width: 95%; }
@@ -305,7 +330,7 @@
 
         <div style="margin-top: 30px; border-top: 2px dashed #ddd; padding-top:15px;">
             <h3 style="color:#1a237e;">🏆 명예의 전당</h3>
-            <table class="rank-table" id="ranking-table"><tr><td>로딩중...</td></tr></table>
+            <table class="rank-table" id="ranking-table"><tr><td colspan="4" style="color:white;">로딩중...</td></tr></table>
         </div>
     </div>
 
@@ -460,7 +485,6 @@
             const input = document.getElementById('user-input');
             let currentVal = input.value.trim();
             
-            // 랜덤으로 아직 입력되지 않은 위치의 글자 하나를 알려줌
             let missingIndices = [];
             for (let i = 0; i < correctWord.length; i++) {
                 if (currentVal[i] !== correctWord[i]) {
@@ -471,12 +495,10 @@
             if (missingIndices.length > 0) {
                 const randomIdx = missingIndices[Math.floor(Math.random() * missingIndices.length)];
                 let chars = currentVal.split('');
-                // 길이가 부족하면 채워넣음
                 while(chars.length <= randomIdx) chars.push('');
                 chars[randomIdx] = correctWord[randomIdx];
                 input.value = chars.join('');
             } else {
-                // 이미 다 맞게 써놓고 힌트 누른 경우
                 alert("정답인 것 같은데요? 확인 버튼을 눌러보세요!");
             }
             input.focus();
@@ -534,7 +556,7 @@
             
             let html = `<tr><th>순위</th><th>이름</th><th>내용</th><th>점수</th></tr>`;
             if (records.length === 0) {
-                html += `<tr><td colspan="4" style="padding:20px;">아직 도전자가 없습니다.<br>첫 번째 주인공이 되어보세요!</td></tr>`;
+                html += `<tr><td colspan="4" style="padding:20px; color:white;">아직 도전자가 없습니다.<br>첫 번째 주인공이 되어보세요!</td></tr>`;
             } else {
                 records.slice(0, 5).forEach((r, index) => {
                     let badge = index === 0 ? '🥇' : (index === 1 ? '🥈' : (index === 2 ? '🥉' : index + 1));
@@ -543,7 +565,7 @@
                         <td>${badge}</td>
                         <td>${r.name}</td>
                         <td><small>${r.mode}<br>${r.time}초</small></td>
-                        <td style="font-weight:bold; color:#1a237e;">${r.score}점</td>
+                        <td style="font-weight:bold; color:#ffd54f;">${r.score}점</td>
                     </tr>`;
                 });
             }
