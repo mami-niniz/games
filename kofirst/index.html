@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"> 
+    <title>하마의 도전! 초성 골든벨</title>
+    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Jua&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; }
+
+        body { 
+            font-family: 'Jua', sans-serif; 
+            background-color: #1a237e; /* 골든벨 네이비 색상 */
+            background-image: linear-gradient(135deg, #1a237e 0%, #283593 100%);
+            color: #fff;
+            text-align: center; 
+            margin: 0; 
+            padding: 0; 
+            min-height: 100dvh; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* ★ 공통 박스 스타일 */
+        .game-box { 
+            background: white; 
+            border-radius: 20px; 
+            padding: 30px; 
+            max-width: 800px; 
+            width: 95%;
+            margin-top: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5); 
+            border: 5px solid #fdd835; /* 골든벨 금색 테두리 */
+            color: #333;
+        }
+        .hidden { display: none !important; }
+
+        /* 인트로 */
+        .intro-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .char-img {
+            width: 180px;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 6px solid #fdd835;
+            background: #fff;
+            box-shadow: 0 0 20px rgba(253, 216, 53, 0.6);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        h1 { 
+            font-family: 'Black Han Sans', sans-serif; 
+            color: #1a237e; 
+            font-size: 42px; 
+            margin: 0;
+            text-shadow: 2px 2px 0 #fdd835;
+        }
+        
+        .desc-text { font-size: 20px; color: #555; margin-top: 5px; font-weight: bold;}
+
+        /* 입력창 및 버튼 */
+        input[type="text"] { 
+            padding: 12px; 
+            font-size: 22px; 
+            border-radius: 30px; 
+            border: 3px solid #1a237e; 
+            width: 70%; 
+            font-family: 'Jua', sans-serif; 
+            text-align: center; 
+            margin-bottom: 20px; 
+            background: #e8eaf6; 
+            color: #1a237e;
+        }
+        
+        .btn { padding: 10px 15px; margin: 5px; font-size: 18px; cursor: pointer; border: none; border-radius: 10px; font-family: 'Jua', sans-serif; transition: 0.1s; box-shadow: 0 4px 0 rgba(0,0,0,0.2); }
+        .btn:active { transform: translateY(4px); box-shadow: none; }
+        
+        .lvl-btn { background: #e0e0e0; color: #555; }
+        .lvl-btn.active { background: #1a237e; color: white; border: 2px solid #fdd835;}
+        
+        .diff-btn { background: #fff9c4; color: #f57f17; }
+        .diff-btn.active { background: #fdd835; color: #1a237e; border: 2px solid #fbc02d;}
+
+        .start-btn { 
+            background: #d32f2f; /* 빨간색 포인트 */
+            color: white; 
+            font-size: 32px; 
+            padding: 15px 50px; 
+            margin-top: 20px; 
+            width: 80%; 
+            border-radius: 50px;
+            border-bottom: 5px solid #b71c1c;
+            box-shadow: 0 5px 15px rgba(211, 47, 47, 0.4);
+        }
+
+        /* ★ 게임 화면 */
+        #game-screen {
+            width: 100%;
+            max-width: 600px;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            padding-bottom: 50px;
+        }
+
+        .top-bar {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 20px;
+            font-size: 24px;
+            color: #fdd835;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px #000;
+        }
+
+        /* 칠판/보드 스타일 */
+        .board-area {
+            position: relative;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        
+        .hippo-char {
+            width: 120px;
+            position: absolute;
+            top: -50px;
+            left: 20px;
+            z-index: 10;
+        }
+
+        .whiteboard {
+            background: #fff;
+            border: 8px solid #a1887f; /* 나무 테두리 */
+            border-radius: 15px;
+            width: 90%;
+            min-height: 250px;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            position: relative;
+        }
+
+        .quiz-mean {
+            font-size: 22px;
+            color: #333;
+            margin-bottom: 20px;
+            word-break: keep-all;
+            line-height: 1.4;
+        }
+
+        .quiz-hint {
+            font-size: 60px; /* 초성 크게 */
+            font-family: 'Black Han Sans', sans-serif;
+            color: #1a237e;
+            letter-spacing: 5px;
+            background: #e8eaf6;
+            padding: 10px 30px;
+            border-radius: 15px;
+            border: 3px dashed #3949ab;
+        }
+
+        /* 하단 입력 영역 */
+        .input-area {
+            width: 100%;
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .game-input {
+            width: 80%;
+            padding: 15px;
+            font-size: 28px;
+            text-align: center;
+            border: 4px solid #fdd835;
+            border-radius: 15px;
+            outline: none;
+        }
+        .game-input:focus { border-color: #ffca28; box-shadow: 0 0 10px #ffca28; }
+
+        .btn-group { display: flex; gap: 10px; width: 80%; justify-content: center; }
+        .submit-btn { 
+            flex: 2; 
+            background: #1a237e; 
+            color: white; 
+            font-size: 24px; 
+            padding: 12px; 
+            border-radius: 10px; 
+            border: none; 
+            font-family: 'Jua', sans-serif;
+            cursor: pointer;
+        }
+        .pass-btn { 
+            flex: 1; 
+            background: #9e9e9e; 
+            color: white; 
+            font-size: 20px; 
+            padding: 12px; 
+            border-radius: 10px; 
+            border: none;
+            font-family: 'Jua', sans-serif;
+            cursor: pointer;
+        }
+
+        /* 틀렸을 때 효과 */
+        .shake { animation: shake 0.4s; border-color: #d32f2f !important; color: #d32f2f; }
+        @keyframes shake { 0% { transform: translateX(0); } 25% { transform: translateX(-10px); } 50% { transform: translateX(10px); } 75% { transform: translateX(-10px); } 100% { transform: translateX(0); } }
+
+        /* 명예의 전당 테이블 */
+        .rank-table { width: 100%; margin-top: 20px; border-collapse: collapse; font-size: 18px; }
+        .rank-table th { background: #fdd835; padding: 8px; color: #1a237e; }
+        .rank-table td { border-bottom: 1px solid #eee; padding: 8px; color: #333; }
+        .rank-1 { color: #f57f17; font-weight: bold; font-size: 1.1em; }
+
+        @media (max-width: 600px) {
+            .char-img { width: 140px; height: 140px; }
+            h1 { font-size: 32px; }
+            .whiteboard { min-height: 200px; padding: 20px 15px; }
+            .quiz-mean { font-size: 18px; }
+            .quiz-hint { font-size: 40px; }
+            .game-input { width: 90%; font-size: 24px; }
+            .btn-group { width: 90%; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="intro-screen" class="game-box">
+        <div class="intro-header">
+            <img src="hippo.png" alt="골든벨 하마" class="char-img" onerror="this.src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Animals/Hippopotamus.png'">
+            <h1>하마의 도전!<br>초성 골든벨</h1>
+            <p class="desc-text">초성을 보고 단어를 맞춰보세요!</p>
+        </div>
+
+        <input type="text" id="username" placeholder="이름을 입력하세요" maxlength="8">
+
+        <div style="margin: 20px 0;">
+            <p style="margin-bottom:5px;">📚 학년 선택</p>
+            <button class="btn lvl-btn active" onclick="selectLevel('1-2', this)">1-2학년</button>
+            <button class="btn lvl-btn" onclick="selectLevel('3-4', this)">3-4학년</button>
+            <button class="btn lvl-btn" onclick="selectLevel('5-6', this)">5-6학년</button>
+            <button class="btn lvl-btn" onclick="selectLevel('중1', this)">중1</button>
+        </div>
+
+        <div style="margin: 20px 0;">
+            <p style="margin-bottom:5px;">🔔 문제 수 선택</p>
+            <button class="btn diff-btn active" onclick="selectCount(5, this)">5문제</button>
+            <button class="btn diff-btn" onclick="selectCount(10, this)">10문제</button>
+            <button class="btn diff-btn" onclick="selectCount(15, this)">15문제</button>
+            <button class="btn diff-btn" onclick="selectCount(20, this)">20문제</button>
+        </div>
+
+        <button class="btn start-btn" onclick="startGame()">도전! 골든벨 ▶</button>
+
+        <div style="margin-top: 30px; border-top: 2px dashed #ddd; padding-top:15px;">
+            <h3 style="color:#1a237e;">🏆 명예의 전당</h3>
+            <table class="rank-table" id="ranking-table"><tr><td>로딩중...</td></tr></table>
+        </div>
+    </div>
+
+    <div id="game-screen">
+        <div class="top-bar">
+            <span>🔔 <span id="progress-display">1 / 10</span></span>
+            <span>⭐ <span id="score-display">0</span>점</span>
+        </div>
+
+        <div class="board-area">
+            <img src="hippo.png" class="hippo-char" onerror="this.src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Animals/Hippopotamus.png'">
+            <div class="whiteboard">
+                <div id="quiz-mean" class="quiz-mean">문제 설명이 나옵니다...</div>
+                <div id="quiz-hint" class="quiz-hint">ㅅㄱ</div>
+            </div>
+        </div>
+
+        <div class="input-area">
+            <input type="text" id="user-input" class="game-input" placeholder="정답 입력" onkeypress="handleEnter(event)">
+            <div class="btn-group">
+                <button class="submit-btn" onclick="checkAnswer()">정답 확인</button>
+                <button class="pass-btn" onclick="passQuestion()">패스</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="result-screen" class="game-box hidden">
+        <img src="hippo.png" class="char-img" style="width:150px; height:150px; border-color:#fdd835;" onerror="this.src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Animals/Hippopotamus.png'">
+        <h1 style="color:#1a237e; margin-top:20px;">골든벨 종료!</h1>
+        <h2 id="final-score" style="color: #f57f17; font-size: 40px; margin: 15px 0;">90점</h2>
+        <p id="final-msg" style="font-size: 22px; color:#555;">정말 대단해요!</p>
+        <button class="btn start-btn" style="background:#1a237e; border-bottom:5px solid #0d1642;" onclick="location.reload()">🔄 다시 도전하기</button>
+    </div>
+
+    <script src="../kovocab/my_word_data.js"></script> 
+
+    <script>
+        // 1. 기본 데이터 설정
+        if (typeof wordData === 'undefined') {
+            alert("데이터 파일을 찾을 수 없습니다! (../kovocab/my_word_data.js 확인)");
+            var wordData = { "1-2": [{word:"사과",mean:"과일"},{word:"바나나",mean:"노란 과일"}] };
+        }
+
+        // 2. 한글 초성 추출 함수 (핵심!)
+        const CHO_HANGUL = [
+            'ㄱ', 'ㄲ', 'ㄴ', 'ㄷ', 'ㄸ',
+            'ㄹ', 'ㅁ', 'ㅂ', 'ㅃ', 'ㅅ',
+            'ㅆ', 'ㅇ', 'ㅈ', 'ㅉ', 'ㅊ',
+            'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'
+        ];
+
+        function getChoseong(str) {
+            let result = "";
+            for(let i=0; i<str.length; i++) {
+                const code = str.charCodeAt(i) - 44032;
+                if(code > -1 && code < 11172) {
+                    const choIdx = Math.floor(code / 588);
+                    result += CHO_HANGUL[choIdx];
+                } else {
+                    result += str[i]; // 한글이 아니면(띄어쓰기 등) 그대로
+                }
+            }
+            return result;
+        }
+
+        let currentLevel = "1-2";
+        let targetCount = 5;
+        let userName = "";
+        let quizList = [];
+        let currentIndex = 0;
+        let score = 0;
+        let startTime;
+
+        window.onload = loadRanking;
+
+        function selectLevel(lvl, btn) {
+            currentLevel = lvl;
+            document.querySelectorAll('.lvl-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
+        function selectCount(count, btn) {
+            targetCount = count;
+            document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
+        function startGame() {
+            const inputName = document.getElementById('username').value.trim();
+            if (!inputName) { alert("이름을 입력해주세요!"); return; }
+            userName = inputName;
+
+            const pool = wordData[currentLevel];
+            if (!pool || pool.length < targetCount) {
+                alert(`단어가 부족합니다. (최소 ${targetCount}개 필요)`); return;
+            }
+
+            // 문제 섞어서 뽑기
+            quizList = [...pool].sort(() => 0.5 - Math.random()).slice(0, targetCount);
+            
+            // 화면 전환
+            document.getElementById('intro-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('game-screen').style.display = 'flex';
+
+            // 게임 초기화
+            currentIndex = 0;
+            score = 0;
+            startTime = Date.now();
+            showQuestion();
+        }
+
+        function showQuestion() {
+            if (currentIndex >= quizList.length) {
+                endGame();
+                return;
+            }
+
+            const q = quizList[currentIndex];
+            document.getElementById('progress-display').innerText = `${currentIndex + 1} / ${targetCount}`;
+            document.getElementById('score-display').innerText = score;
+            
+            document.getElementById('quiz-mean').innerText = q.mean;
+            document.getElementById('quiz-hint').innerText = getChoseong(q.word);
+            
+            const input = document.getElementById('user-input');
+            input.value = '';
+            input.focus();
+        }
+
+        function handleEnter(e) {
+            if(e.key === 'Enter') checkAnswer();
+        }
+
+        function checkAnswer() {
+            const input = document.getElementById('user-input');
+            const userVal = input.value.trim().replace(/\s/g, ''); // 띄어쓰기 무시
+            const correctVal = quizList[currentIndex].word.replace(/\s/g, '');
+
+            if (userVal === correctVal) {
+                // 정답!
+                score += 10;
+                currentIndex++;
+                input.classList.remove('shake');
+                showQuestion();
+            } else {
+                // 오답!
+                input.classList.add('shake');
+                setTimeout(() => input.classList.remove('shake'), 400);
+                input.value = '';
+                input.focus();
+            }
+        }
+
+        function passQuestion() {
+            // 패스하면 점수 없음
+            if(confirm("패스하시겠습니까? (이 문제는 0점 처리됩니다)")) {
+                currentIndex++;
+                showQuestion();
+            }
+        }
+
+        function endGame() {
+            const endTime = Date.now();
+            const timeTaken = ((endTime - startTime) / 1000).toFixed(1);
+            
+            document.getElementById('game-screen').style.display = 'none';
+            document.getElementById('result-screen').classList.remove('hidden');
+            
+            document.getElementById('final-score').innerText = `${score}점`;
+            
+            let msg = "";
+            if(score >= targetCount * 10) msg = "와우! 만점이에요! 골든벨을 울렸어요! 🔔🎉";
+            else if(score >= targetCount * 7) msg = "아주 훌륭해요! 조금만 더 하면 만점! 🦛👍";
+            else if(score >= targetCount * 4) msg = "잘했어요! 다음엔 더 잘할 수 있어요. 🦛💪";
+            else msg = "괜찮아요. 다시 도전해봐요! 🦛💧";
+            
+            document.getElementById('final-msg').innerText = msg;
+
+            // 랭킹 저장 (점수 높음 > 시간 빠름 순)
+            saveScore(userName, score, parseFloat(timeTaken), `${currentLevel} (${targetCount}문제)`);
+        }
+
+        function saveScore(name, score, time, mode) {
+            let records = JSON.parse(localStorage.getItem('hippoGameRank')) || [];
+            records.push({ name, score, time, mode, date: new Date().toLocaleDateString() });
+            
+            // 정렬: 점수 내림차순 -> 시간 오름차순
+            records.sort((a, b) => {
+                if(b.score !== a.score) return b.score - a.score;
+                return a.time - b.time;
+            });
+            
+            localStorage.setItem('hippoGameRank', JSON.stringify(records));
+        }
+
+        function loadRanking() {
+            const table = document.getElementById('ranking-table');
+            if(!table) return;
+            let records = JSON.parse(localStorage.getItem('hippoGameRank')) || [];
+            
+            let html = `<tr><th>순위</th><th>이름</th><th>내용</th><th>점수</th></tr>`;
+            if (records.length === 0) {
+                html += `<tr><td colspan="4" style="padding:20px;">아직 도전자가 없습니다.<br>첫 번째 주인공이 되어보세요!</td></tr>`;
+            } else {
+                records.slice(0, 5).forEach((r, index) => {
+                    let badge = index === 0 ? '🥇' : (index === 1 ? '🥈' : (index === 2 ? '🥉' : index + 1));
+                    let rankClass = index < 3 ? `rank-${index+1}` : '';
+                    html += `<tr class="${rankClass}">
+                        <td>${badge}</td>
+                        <td>${r.name}</td>
+                        <td><small>${r.mode}<br>${r.time}초</small></td>
+                        <td style="font-weight:bold; color:#1a237e;">${r.score}점</td>
+                    </tr>`;
+                });
+            }
+            table.innerHTML = html;
+        }
+    </script>
+</body>
+</html>
