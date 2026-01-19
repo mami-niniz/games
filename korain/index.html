@@ -2,10 +2,12 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"> 
     <title>곰펜하이머의 단어 방어작전</title>
     <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Jua&display=swap" rel="stylesheet">
     <style>
+        * { box-sizing: border-box; } /* 전체 크기 계산 통일 */
+
         body { 
             font-family: 'Jua', sans-serif; 
             background: linear-gradient(180deg, #81d4fa 0%, #b3e5fc 100%); 
@@ -14,6 +16,8 @@
             margin: 0; 
             padding: 0; 
             min-height: 100vh;
+            /* ★ 모바일 브라우저 UI 대응 */
+            min-height: 100dvh; 
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -64,12 +68,7 @@
             font-size: 64px; 
             margin: 0 0 10px 0;
             line-height: 1.1;
-            text-shadow: 
-                3px 3px 0 #fff,
-                -1px -1px 0 #fff,  
-                1px -1px 0 #fff,
-                -1px 1px 0 #fff,
-                1px 1px 0 #fff;
+            text-shadow: 3px 3px 0 #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;
         }
         
         .desc-text {
@@ -111,59 +110,62 @@
             border-radius: 20px;
         }
 
+        /* ★ 게임 화면 레이아웃 재설계 (Flexbox 사용) */
         #game-screen {
             position: fixed;
             top: 0; left: 0;
             width: 100%;
-            height: 100%;
-            background: linear-gradient(180deg, #81d4fa 0%, #b3e5fc 100%);
+            height: 100vh;
+            height: 100dvh; /* 모바일 주소창 대응 */
             overflow: hidden;
             display: none; 
+            flex-direction: column; /* 세로 배치 */
             z-index: 999;
         }
 
         .hud {
             position: absolute;
-            top: 20px; left: 0; width: 100%;
+            top: 15px; left: 0; width: 100%;
             display: flex; justify-content: space-between;
-            padding: 0 30px; box-sizing: border-box;
-            font-size: 32px; z-index: 100; 
+            padding: 0 20px;
+            font-size: 28px; z-index: 100; 
             color: #01579b;
             font-weight: bold;
         }
 
         .home-btn {
-            position: absolute;
-            top: 20px; right: 20px;
-            z-index: 110;
             background: #fff;
             color: #333;
             border: 2px solid #ccc;
-            padding: 10px 20px;
-            font-size: 20px;
+            padding: 8px 15px;
+            font-size: 18px;
             border-radius: 30px;
             cursor: pointer;
             font-family: 'Jua', sans-serif;
             box-shadow: 0 3px 5px rgba(0,0,0,0.1);
         }
-        .home-btn:hover { background: #f5f5f5; }
 
-        /* ★ 떨어지는 요소 스타일 (문장이므로 너비 조정) */
+        /* ★ 하늘 영역: 남는 공간을 모두 차지 (flex: 1) */
+        #sky-area {
+            position: relative;
+            flex: 1; /* 높이 유동적 */
+            width: 100%;
+            overflow: hidden;
+        }
+
         .falling-word {
             position: absolute;
             color: #01579b; 
-            font-size: 22px; /* 문장이 길 수 있어서 폰트 크기 살짝 조정 */
+            font-size: 22px; 
             font-weight: bold;
             background: white;
             padding: 12px 20px;
             border-radius: 20px;
             border: 3px solid #4fc3f7; 
             box-shadow: 0 5px 10px rgba(0,0,0,0.1);
-            
-            /* 긴 문장 처리 */
-            max-width: 80%; /* 화면 너비의 80%까지만 차지 */
-            white-space: normal; /* 줄바꿈 허용 */
-            word-break: keep-all; /* 단어 단위로 줄바꿈 */
+            max-width: 80%; 
+            white-space: normal; 
+            word-break: keep-all; 
             line-height: 1.3;
             text-align: center;
         }
@@ -172,15 +174,16 @@
             background: #fff3e0;
             color: #d84315;
             border-color: #ff7043;
-            transform: scale(1.05); /* 문장이라 너무 커지면 안됨 */
+            transform: scale(1.05);
             box-shadow: 0 0 20px #ffccbc;
             z-index: 10;
         }
 
+        /* ★ 컨트롤 영역: 내용물만큼만 높이 차지 (height: auto) */
         .control-area {
-            position: absolute;
-            bottom: 0; left: 0; width: 100%;
-            height: 350px; 
+            position: relative; /* absolute 아님! */
+            width: 100%;
+            height: auto; 
             background: #fff; 
             border-top: 8px solid #81d4fa;
             display: flex;
@@ -188,15 +191,16 @@
             align-items: center;
             justify-content: center;
             z-index: 50;
+            padding-bottom: 20px; /* 하단 여백 확보 */
             box-shadow: 0 -10px 20px rgba(0,0,0,0.05);
         }
 
         .bear-avatar {
-            width: 130px; height: 130px;
+            width: 120px; height: 120px;
             border-radius: 50%;
             border: 6px solid #81d4fa;
             position: absolute;
-            top: -65px; 
+            top: -60px; /* 박스 위로 튀어나오게 */
             background: #fff;
             z-index: 60;
             object-fit: cover;
@@ -207,19 +211,18 @@
             grid-template-columns: 1fr 1fr;
             gap: 15px; 
             width: 95%;
-            max-width: 1000px;
-            margin-top: 50px;
+            max-width: 800px;
+            margin-top: 50px; /* 곰돌이 자리 확보 */
             padding: 0 20px;
-            box-sizing: border-box;
         }
-        /* ★ 버튼 스타일: 단어가 들어가므로 글씨를 아주 크게 */
+
         .ans-btn {
             background: #f1f8e9; 
             color: #33691e;
             border: 2px solid #aed581;
             border-radius: 15px;
             padding: 20px; 
-            font-size: 32px; /* 단어니까 시원하게 32px! */
+            font-size: 32px; 
             font-weight: bold;
             font-family: 'Jua', sans-serif;
             cursor: pointer;
@@ -227,7 +230,6 @@
             box-shadow: 0 5px 0 #aed581;
         }
         .ans-btn:active { transform: translateY(4px); box-shadow: none; }
-        .ans-btn:hover { background: #dcedc8; }
 
         .laser {
             position: absolute;
@@ -245,6 +247,7 @@
         th { background: #e1f5fe; color: #0277bd; }
         .rank-1 { color: #ff6f00; font-size: 1.2em; text-shadow: 1px 1px 0 #ffe0b2; }
         
+        /* ★ 모바일 최적화 (더 꼼꼼하게) */
         @media (max-width: 650px) {
             .game-box { padding: 25px 20px; margin-top: 20px; }
             .intro-header { flex-direction: column; gap: 10px; margin-bottom: 20px; }
@@ -259,14 +262,26 @@
             .lvl-btn, .diff-btn { padding: 8px 12px; font-size: 16px; margin: 4px; }
             .start-btn { margin-top: 15px; padding: 15px 40px; font-size: 24px; }
 
-            .answers-grid { grid-template-columns: 1fr; gap: 8px; margin-top: 50px; }
-            .ans-btn { padding: 15px; font-size: 24px; }
-            .home-btn { top: 10px; right: 10px; font-size: 14px; padding: 5px 12px; }
-            .hud { font-size: 20px; padding: 0 15px; top: 15px; }
-            .control-area { height: 320px; }
+            /* 게임 화면 조정 */
+            .answers-grid { 
+                grid-template-columns: 1fr; /* 버튼 한 줄로 */
+                gap: 10px; 
+                margin-top: 45px;
+                padding: 0 15px;
+            }
+            .ans-btn { padding: 12px; font-size: 24px; }
             
-            /* 모바일에서 떨어지는 문장 폰트 조절 */
-            .falling-word { font-size: 18px; padding: 10px 15px; }
+            /* 질문 텍스트 조정 */
+            #question-text { margin-top: 10px !important; font-size: 18px !important; margin-bottom: 0px !important;}
+            
+            /* 곰돌이 크기 축소 */
+            .bear-avatar { width: 90px; height: 90px; top: -45px; border-width: 4px; }
+            
+            /* 떨어지는 문장 폰트 */
+            .falling-word { font-size: 16px; padding: 8px 12px; }
+            
+            .hud { font-size: 18px; padding: 0 15px; top: 10px; }
+            .home-btn { font-size: 14px; padding: 5px 10px; }
         }
 
     </style>
@@ -316,11 +331,11 @@
             <span>❤️ <span id="life-display">5</span></span>
         </div>
 
-        <div id="sky-area" style="position:absolute; top:0; left:0; width:100%; height:calc(100vh - 350px);"></div>
+        <div id="sky-area"></div>
 
         <div class="control-area">
             <img src="bear.png" class="bear-avatar" onerror="this.src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Animals/Bear.png'">
-            <div id="question-text" style="margin-top: 40px; font-size: 24px; color: #0277bd;">내려오는 뜻에 맞는 단어는?</div>
+            <div id="question-text" style="margin-top: 50px; font-size: 24px; color: #0277bd;">내려오는 뜻에 맞는 단어는?</div>
             
             <div class="answers-grid" id="answers-box">
                 <button class="ans-btn">보기1</button>
@@ -394,7 +409,9 @@
 
             document.getElementById('intro-screen').classList.add('hidden');
             document.getElementById('result-screen').classList.add('hidden');
-            document.getElementById('game-screen').style.display = 'block';
+            const gameScreen = document.getElementById('game-screen');
+            gameScreen.classList.remove('hidden');
+            gameScreen.style.display = 'flex'; // Flexbox 적용
 
             score = 0; life = 5; isGameOver = false; activeWords = [];
             updateHUD();
@@ -415,7 +432,6 @@
             const el = document.createElement('div');
             el.classList.add('falling-word');
             
-            // ★ 중요 변경: 내려오는 것은 '뜻(문장)' 입니다!
             el.innerText = randItem.mean;
             
             const randomX = 10 + Math.random() * 70;
@@ -493,7 +509,6 @@
                 const btn = document.createElement('button');
                 btn.className = 'ans-btn';
                 
-                // ★ 중요 변경: 버튼에 들어가는 것은 '단어' 입니다!
                 btn.innerText = opt.word;
                 
                 btn.onclick = () => checkAnswer(opt, correctItem);
@@ -522,8 +537,9 @@
             const laser = document.createElement('div');
             laser.className = 'laser';
             const targetTop = targetWord.y;
-            const bearTop = document.getElementById('sky-area').clientHeight; 
-            laser.style.height = (bearTop - targetTop) + "px";
+            // 레이저 높이 계산: sky-area 높이 - 타겟 위치
+            const skyHeight = document.getElementById('sky-area').clientHeight;
+            laser.style.height = (skyHeight - targetTop) + "px";
             laser.style.bottom = "0px"; 
             laser.style.left = targetWord.x + "%";
             laser.style.top = targetTop + "px";
