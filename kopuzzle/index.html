@@ -27,7 +27,7 @@
             background: #fff8e1; 
             border-radius: 20px; 
             padding: 30px; 
-            max-width: 800px; 
+            max-width: 900px; /* 박스 너비 확대 */
             width: 95%;
             margin-top: 30px;
             margin-bottom: 30px;
@@ -45,8 +45,8 @@
         }
 
         .char-img {
-            width: 160px;
-            height: 160px;
+            width: 180px; /* 이미지 크기 확대 */
+            height: 180px;
             object-fit: cover;
             border-radius: 50%;
             border: 6px solid #8d6e63;
@@ -57,27 +57,27 @@
         h1 { 
             font-family: 'Jua', sans-serif; 
             color: #5d4037; 
-            font-size: 42px; 
+            font-size: 48px; /* 제목 크기 확대 */
             margin: 0;
             line-height: 1.2;
             text-shadow: 2px 2px 0 #efebe9;
         }
         
-        .desc-text { font-size: 20px; color: #795548; margin-top: 5px; }
+        .desc-text { font-size: 24px; color: #795548; margin-top: 5px; }
 
         input[type="text"] { 
-            padding: 12px; 
-            font-size: 20px; 
+            padding: 15px; 
+            font-size: 24px; 
             border-radius: 12px; 
             border: 3px solid #8d6e63; 
-            width: 70%; 
+            width: 60%; 
             font-family: 'Jua', sans-serif; 
             text-align: center; 
             margin-bottom: 20px; 
             background: #efebe9; 
         }
         
-        .btn { padding: 10px 15px; margin: 5px; font-size: 18px; cursor: pointer; border: none; border-radius: 10px; font-family: 'Jua', sans-serif; transition: 0.1s; box-shadow: 0 4px 0 rgba(0,0,0,0.2); }
+        .btn { padding: 12px 20px; margin: 8px; font-size: 20px; cursor: pointer; border: none; border-radius: 10px; font-family: 'Jua', sans-serif; transition: 0.1s; box-shadow: 0 4px 0 rgba(0,0,0,0.2); }
         .btn:active { transform: translateY(4px); box-shadow: none; }
         
         .lvl-btn { background: #d7ccc8; color: #5d4037; }
@@ -89,8 +89,8 @@
         .start-btn { 
             background: #6d4c41; 
             color: white; 
-            font-size: 28px; 
-            padding: 15px 40px; 
+            font-size: 32px; 
+            padding: 15px 50px; 
             margin-top: 20px; 
             width: 80%; 
             border-bottom: 5px solid #3e2723;
@@ -98,11 +98,11 @@
 
         #game-screen {
             width: 100%;
-            max-width: 600px;
+            max-width: 800px; /* 게임 화면 너비 확대 */
             display: none;
             flex-direction: column;
             align-items: center;
-            padding-bottom: 160px; 
+            padding-bottom: 180px; 
         }
 
         .hud {
@@ -110,8 +110,8 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 20px;
-            font-size: 20px;
+            padding: 15px 30px;
+            font-size: 24px;
             font-weight: bold;
             color: #5d4037;
             background: #fff3e0;
@@ -122,21 +122,24 @@
         }
 
         .crossword-container {
-            margin-top: 20px;
-            padding: 10px;
+            margin-top: 30px;
+            padding: 20px;
             background: #8d6e63;
-            border-radius: 10px;
+            border-radius: 15px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
             overflow: auto;
             max-width: 100%;
+            display: flex; justify-content: center; /* 그리드 중앙 정렬 */
         }
 
         table { border-collapse: collapse; background: #3e2723; margin: 0 auto; }
+        
+        /* ★ PC용 큼직한 칸 설정 */
         td {
-            width: 40px; height: 40px;
-            border: 1px solid #5d4037;
+            width: 60px; height: 60px; /* 40px -> 60px로 확대 */
+            border: 2px solid #5d4037; /* 테두리 두껍게 */
             text-align: center;
-            font-size: 20px;
+            font-size: 30px; /* 글자 크기 확대 */
             background: #3e2723; 
             color: transparent;
             cursor: default;
@@ -160,8 +163,8 @@
 
         .cell-num {
             position: absolute;
-            top: 1px; left: 2px;
-            font-size: 10px;
+            top: 2px; left: 3px;
+            font-size: 14px; /* 번호도 크게 */
             color: #8d6e63;
             line-height: 1;
             font-weight: bold;
@@ -171,8 +174,8 @@
             position: fixed;
             bottom: 0; left: 0; right: 0;
             background: #fff;
-            border-top: 5px solid #8d6e63;
-            padding: 15px;
+            border-top: 6px solid #8d6e63;
+            padding: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -180,14 +183,14 @@
             z-index: 100;
         }
 
-        .clue-label { font-size: 14px; color: #8d6e63; margin-bottom: 5px; }
+        .clue-label { font-size: 18px; color: #8d6e63; margin-bottom: 5px; }
         
         .clue-text {
-            font-size: 18px;
-            margin-bottom: 10px;
+            font-size: 26px; /* 설명 글씨 확대 */
+            margin-bottom: 15px;
             color: #5d4037;
             word-break: keep-all;
-            min-height: 40px;
+            min-height: 50px;
             display: flex; align-items: center; justify-content: center;
             font-weight: bold;
             text-align: center;
@@ -196,17 +199,17 @@
 
         .answer-input-group {
             display: flex;
-            gap: 10px;
+            gap: 15px;
             width: 100%;
-            max-width: 500px;
+            max-width: 600px;
         }
 
         .answer-input {
             flex: 1;
-            padding: 10px;
-            font-size: 20px;
-            border: 3px solid #8d6e63;
-            border-radius: 10px;
+            padding: 15px;
+            font-size: 24px;
+            border: 4px solid #8d6e63;
+            border-radius: 15px;
             text-align: center;
             font-family: 'Jua', sans-serif;
             margin-bottom: 0; 
@@ -216,9 +219,9 @@
             background: #8d6e63;
             color: white;
             border: none;
-            border-radius: 10px;
-            padding: 0 20px;
-            font-size: 18px;
+            border-radius: 15px;
+            padding: 0 30px;
+            font-size: 22px;
             font-family: 'Jua', sans-serif;
             cursor: pointer;
         }
@@ -226,19 +229,27 @@
         .shake { animation: shake 0.4s; border-color: #e53935; }
         @keyframes shake { 0% { transform: translateX(0); } 25% { transform: translateX(-5px); } 50% { transform: translateX(5px); } 75% { transform: translateX(-5px); } 100% { transform: translateX(0); } }
 
-        .rank-table { width: 100%; margin-top: 20px; border-collapse: collapse; font-size: 18px; }
-        .rank-table th { background: #d7ccc8; padding: 8px; color: #3e2723; }
-        .rank-table td { border-bottom: 1px solid #efebe9; padding: 8px; color: #5d4037; }
+        .rank-table { width: 100%; margin-top: 20px; border-collapse: collapse; font-size: 20px; }
+        .rank-table th { background: #d7ccc8; padding: 12px; color: #3e2723; }
+        .rank-table td { border-bottom: 1px solid #efebe9; padding: 12px; color: #5d4037; }
         .rank-1 { color: #e65100; font-weight: bold; }
 
+        /* ★ 모바일 최적화 (모바일에서만 작게 조정) */
         @media (max-width: 600px) {
             .intro-header { flex-direction: column; gap: 10px; }
             h1 { font-size: 32px; }
             .char-img { width: 120px; height: 120px; }
-            td { width: 34px; height: 34px; font-size: 16px; } 
+            
+            /* 모바일 전용 칸 크기 */
+            td { width: 36px; height: 36px; font-size: 18px; border-width: 1px; } 
+            .cell-num { font-size: 10px; top: 1px; left: 1px; }
+            
             .game-box { padding: 20px; }
-            .input-area { padding: 10px; }
-            .clue-text { font-size: 16px; min-height: 35px; }
+            .input-area { padding: 15px; }
+            .clue-text { font-size: 18px; min-height: 40px; }
+            .answer-input { padding: 10px; font-size: 20px; border-width: 3px; }
+            .submit-btn { padding: 0 20px; font-size: 18px; }
+            .hud { padding: 10px 15px; font-size: 18px; }
         }
     </style>
 </head>
@@ -282,13 +293,13 @@
     <div id="game-screen">
         <div class="hud">
             <span>⏱️ <span id="timer-display">0</span>초</span>
-            <button class="btn" style="background:#fff; color:#5d4037; font-size:14px; padding:5px 10px; margin:0;" onclick="goHome()">🏠 나가기</button>
+            <button class="btn" style="background:#fff; color:#5d4037; font-size:16px; padding:8px 15px; margin:0;" onclick="goHome()">🏠 나가기</button>
         </div>
 
         <div class="crossword-container">
             <table id="crossword-grid"></table>
         </div>
-        <div style="color:#795548; font-size:14px; margin-top:10px;">* 노란색 칸을 누르고 정답을 입력하세요.</div>
+        <div style="color:#795548; font-size:16px; margin-top:15px;">* 노란색 칸을 누르고 정답을 입력하세요.</div>
 
         <div class="input-area">
             <div class="clue-label" id="clue-label">설명</div>
@@ -558,7 +569,6 @@
                 activeWordInfo = null;
                 checkGameClear();
             } else {
-                // 오답 시 힌트 제공
                 input.classList.add('shake');
                 setTimeout(() => input.classList.remove('shake'), 400);
                 
@@ -570,27 +580,22 @@
             }
         }
 
-        // ★ [핵심] 힌트 제공 및 자동 완성 체크
         function giveHint(wordObj) {
             let unsolvedIndices = [];
             for(let i=0; i<wordObj.word.length; i++) {
                 let r = wordObj.row + (wordObj.direction === 'down' ? i : 0);
                 let c = wordObj.col + (wordObj.direction === 'across' ? i : 0);
                 let td = document.querySelector(`td[data-row="${r}"][data-col="${c}"]`);
-                // 아직 'solved'가 아닌 칸 찾기
                 if(td && !td.classList.contains('solved')) {
                     unsolvedIndices.push({r, c});
                 }
             }
 
             if (unsolvedIndices.length > 0) {
-                // 랜덤 한 글자 공개
                 let target = unsolvedIndices[Math.floor(Math.random() * unsolvedIndices.length)];
                 let td = document.querySelector(`td[data-row="${target.r}"][data-col="${target.c}"]`);
                 if(td) td.classList.add('solved');
                 
-                // ★ 힌트 준 뒤, 모든 글자가 다 열렸는지 확인
-                // 다시 한 번 전체 검사
                 let allRevealed = true;
                 for(let i=0; i<wordObj.word.length; i++) {
                     let r = wordObj.row + (wordObj.direction === 'down' ? i : 0);
@@ -602,13 +607,12 @@
                     }
                 }
 
-                // ★ 만약 다 열렸다면 정답 처리!
                 if(allRevealed) {
                     wordObj.solved = true;
                     document.getElementById('input-group').style.visibility = 'hidden';
                     document.getElementById('clue-display').innerText = "허허, 힌트로 다 풀었구만! 정답일세.";
                     activeWordInfo = null;
-                    checkGameClear(); // 게임 끝났는지 확인
+                    checkGameClear(); 
                 }
             }
         }
