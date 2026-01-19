@@ -189,7 +189,6 @@
             box-shadow: 0 -10px 20px rgba(0,0,0,0.05);
         }
 
-        /* PC 기본 곰돌이 */
         .bear-avatar {
             width: 120px; height: 120px;
             border-radius: 50%;
@@ -242,7 +241,6 @@
         th { background: #e1f5fe; color: #0277bd; }
         .rank-1 { color: #ff6f00; font-size: 1.2em; text-shadow: 1px 1px 0 #ffe0b2; }
         
-        /* ★ 모바일 최적화 수정 (2단 배열 & 넓게 쓰기) */
         @media (max-width: 650px) {
             .game-box { padding: 25px 20px; margin-top: 20px; }
             .intro-header { flex-direction: column; gap: 10px; margin-bottom: 20px; }
@@ -257,36 +255,31 @@
             .lvl-btn, .diff-btn { padding: 8px 12px; font-size: 16px; margin: 4px; }
             .start-btn { margin-top: 15px; padding: 15px 40px; font-size: 24px; }
 
-            /* ★ 버튼 2개씩 배치 & 좌우 꽉 채우기 */
             .answers-grid { 
-                grid-template-columns: 1fr 1fr !important; /* 무조건 2열 */
+                grid-template-columns: 1fr 1fr !important;
                 gap: 8px; 
-                margin-top: 40px; /* 곰돌이와 간격 좁힘 */
-                padding: 0 5px;   /* 좌우 여백 최소화 */
+                margin-top: 10px; 
+                padding: 0 5px;
                 width: 100%;
             }
             .ans-btn { padding: 12px 5px; font-size: 22px; } 
             
-            /* 질문 텍스트 조정 (곰돌이가 안 가리게) */
             #question-text { 
-                margin-top: 30px !important; 
+                margin-top: 0 !important; 
                 font-size: 18px !important; 
-                margin-bottom: 0px !important;
+                margin-bottom: 5px !important;
                 padding: 0 10px;
-                /* 곰돌이가 가려도 보이게 살짝 위로 */
-                z-index: 65; 
-                position: relative; 
             }
             
-            /* 곰돌이 크기 축소 및 위치 조정 */
             .bear-avatar { 
-                width: 90px; 
-                height: 90px; 
-                top: -45px; 
-                border-width: 4px; 
+                position: static;
+                width: 70px; 
+                height: 70px; 
+                top: auto; 
+                border-width: 3px; 
+                margin-bottom: 5px; 
             }
             
-            /* 하늘에 떠있는 문장 폰트 */
             .falling-word { font-size: 15px !important; padding: 8px 12px; }
             
             .hud { font-size: 18px; padding: 0 10px; top: 10px; }
@@ -453,7 +446,8 @@
                 el: el,
                 x: randomX,
                 y: -80,
-                speed: (0.3 + Math.random() * 0.3) * gameSpeed, 
+                // ★ 속도 고정: 랜덤 제거 (항상 일정한 속도)
+                speed: 0.4 * gameSpeed, 
                 data: randItem
             });
         }
