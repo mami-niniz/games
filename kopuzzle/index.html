@@ -102,7 +102,7 @@
             display: none;
             flex-direction: column;
             align-items: center;
-            padding-bottom: 140px; 
+            padding-bottom: 160px; 
         }
 
         .hud {
@@ -552,15 +552,13 @@
             if (userVal === activeWordInfo.word) {
                 activeWordInfo.solved = true;
                 revealWord(activeWordInfo);
-                
                 input.value = '';
                 document.getElementById('input-group').style.visibility = 'hidden';
                 document.getElementById('clue-display').innerText = "참 잘했구만! 다음 칸을 눌러보게.";
                 activeWordInfo = null;
-
                 checkGameClear();
             } else {
-                // 오답 시 즉시 힌트 제공
+                // 오답 시 힌트 제공
                 input.classList.add('shake');
                 setTimeout(() => input.classList.remove('shake'), 400);
                 
@@ -572,21 +570,46 @@
             }
         }
 
+        // ★ [핵심] 힌트 제공 및 자동 완성 체크
         function giveHint(wordObj) {
             let unsolvedIndices = [];
             for(let i=0; i<wordObj.word.length; i++) {
                 let r = wordObj.row + (wordObj.direction === 'down' ? i : 0);
                 let c = wordObj.col + (wordObj.direction === 'across' ? i : 0);
                 let td = document.querySelector(`td[data-row="${r}"][data-col="${c}"]`);
+                // 아직 'solved'가 아닌 칸 찾기
                 if(td && !td.classList.contains('solved')) {
                     unsolvedIndices.push({r, c});
                 }
             }
 
             if (unsolvedIndices.length > 0) {
+                // 랜덤 한 글자 공개
                 let target = unsolvedIndices[Math.floor(Math.random() * unsolvedIndices.length)];
                 let td = document.querySelector(`td[data-row="${target.r}"][data-col="${target.c}"]`);
                 if(td) td.classList.add('solved');
+                
+                // ★ 힌트 준 뒤, 모든 글자가 다 열렸는지 확인
+                // 다시 한 번 전체 검사
+                let allRevealed = true;
+                for(let i=0; i<wordObj.word.length; i++) {
+                    let r = wordObj.row + (wordObj.direction === 'down' ? i : 0);
+                    let c = wordObj.col + (wordObj.direction === 'across' ? i : 0);
+                    let cell = document.querySelector(`td[data-row="${r}"][data-col="${c}"]`);
+                    if(!cell || !cell.classList.contains('solved')) {
+                        allRevealed = false;
+                        break;
+                    }
+                }
+
+                // ★ 만약 다 열렸다면 정답 처리!
+                if(allRevealed) {
+                    wordObj.solved = true;
+                    document.getElementById('input-group').style.visibility = 'hidden';
+                    document.getElementById('clue-display').innerText = "허허, 힌트로 다 풀었구만! 정답일세.";
+                    activeWordInfo = null;
+                    checkGameClear(); // 게임 끝났는지 확인
+                }
             }
         }
 
