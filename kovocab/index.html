@@ -51,7 +51,19 @@
             min-width: 90px; 
         }
         .card.flip { transform: rotateY(180deg); }
-        .card.matched { visibility: hidden; opacity: 0; transition: opacity 0.3s; }
+        
+        /* ★ 수정된 부분: 사라지지 않고 스타일만 변경 */
+        .card.matched { 
+            /* visibility: hidden;  <-- 이거 삭제함 */
+            pointer-events: none; /* 클릭만 못하게 막음 */
+        }
+        /* 맞춘 카드는 초록색 테두리와 배경으로 변경 */
+        .card.matched .back {
+            border-color: #66bb6a;     /* 초록색 테두리 */
+            background-color: #e8f5e9; /* 연한 초록 배경 */
+            color: #2e7d32;            /* 글자색도 진한 초록 */
+            box-shadow: 0 0 10px #a5d6a7; /* 살짝 빛나게 */
+        }
 
         .face { width: 100%; height: 100%; position: absolute; backface-visibility: hidden; border-radius: 15px; display: flex; justify-content: center; align-items: center; box-shadow: 0 5px 10px rgba(0,0,0,0.15); font-weight: bold; padding: 5px; word-break: keep-all; overflow: hidden; }
         
@@ -70,6 +82,8 @@
         }
         .back::-webkit-scrollbar { display: none; }
         .back.is-word { color: #1565c0; font-weight: 900; } 
+        /* 맞춘 단어는 초록색으로 덮어씀 */
+        .card.matched .back.is-word { color: #1b5e20; }
 
         table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 16px; }
         th, td { padding: 8px; border-bottom: 1px solid #eee; text-align: center; }
@@ -271,18 +285,20 @@
             matchedPairs++;
 
             if (matchedPairs === cardsArray.length / 2) {
-                // ★ 마지막 카드 맞춤: 사라지지 않고, 2초간 보여줌
+                // ★ 마지막 카드: 2초 기다렸다가 게임 종료
                 clearInterval(timerInterval);
+                firstCard.classList.add('matched');
+                secondCard.classList.add('matched');
                 setTimeout(() => {
                     endGame(((Date.now() - startTime) / 1000).toFixed(1));
-                }, 2000); // 2초 대기
+                }, 2000); 
             } else {
-                // ★ 일반 카드 맞춤: 0.8초 보여주고 사라짐 (보드 정리)
+                // ★ 일반 카드: 0.5초 뒤에 초록색으로 변함 (사라지지 않음!)
                 setTimeout(() => {
                     firstCard.classList.add('matched');
                     secondCard.classList.add('matched');
                     resetBoard(); 
-                }, 800);
+                }, 500);
             }
         }
 
