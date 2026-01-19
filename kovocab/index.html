@@ -57,21 +57,18 @@
         
         .front { background: #2196f3; color: white; font-size: 60px; transform: rotateY(0deg); }
         
-        /* ★ 카드 뒷면(뜻) 스타일 - 글자 최대한 키우기 전략 */
         .back { 
             background: white; 
-            color: #000; /* 완전 검정 */
+            color: #000; 
             transform: rotateY(180deg); border: 4px solid #2196f3; 
-            font-size: 32px; /* 기본값 더 키움 */
-            font-weight: bold; /* 문장도 굵게! */
+            font-size: 32px; 
+            font-weight: bold; 
             display: flex; align-items: center; justify-content: center; text-align: center; 
-            line-height: 1.25; /* 줄간격 좁혀서 글자 공간 확보 */
+            line-height: 1.25; 
             overflow-y: auto; 
-            padding: 4px; /* 여백 최소화 */
+            padding: 4px;
         }
         .back::-webkit-scrollbar { display: none; }
-
-        /* 단어는 파란색으로 구분 */
         .back.is-word { color: #1565c0; font-weight: 900; } 
 
         table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 16px; }
@@ -221,18 +218,15 @@
                 el.classList.add('card');
                 el.dataset.pairId = card.pairId;
                 
-                // ★ 글자 크기 극한으로 키우기
-                let fontSize = '34px'; // 기본값 (기존 28px -> 34px)
+                let fontSize = '34px'; 
                 
                 if(card.type === 'mean') {
-                    // 뜻일 때
-                    if(card.text.length > 40) fontSize = '24px';      // 아주 긴 문장
-                    else if(card.text.length > 30) fontSize = '28px'; // 긴 문장
-                    else if(card.text.length > 20) fontSize = '32px'; // 중간 문장
-                    else if(card.text.length > 10) fontSize = '38px'; // 짧은 문장
-                    else fontSize = '45px';                           // 아주 짧은 뜻
+                    if(card.text.length > 40) fontSize = '24px';      
+                    else if(card.text.length > 30) fontSize = '28px'; 
+                    else if(card.text.length > 20) fontSize = '32px'; 
+                    else if(card.text.length > 10) fontSize = '38px'; 
+                    else fontSize = '45px';                           
                 } else {
-                    // 단어일 때
                     if(card.text.length > 5) fontSize = '42px';       
                     else fontSize = '65px';                           
                 }
@@ -273,11 +267,22 @@
         function disableCards() {
             firstCard.removeEventListener('click', flipCard);
             secondCard.removeEventListener('click', flipCard);
-            resetBoard();
+
             matchedPairs++;
+
             if (matchedPairs === cardsArray.length / 2) {
+                // ★ 마지막 카드 맞춤: 사라지지 않고, 2초간 보여줌
                 clearInterval(timerInterval);
-                endGame(((Date.now() - startTime) / 1000).toFixed(1));
+                setTimeout(() => {
+                    endGame(((Date.now() - startTime) / 1000).toFixed(1));
+                }, 2000); // 2초 대기
+            } else {
+                // ★ 일반 카드 맞춤: 0.8초 보여주고 사라짐 (보드 정리)
+                setTimeout(() => {
+                    firstCard.classList.add('matched');
+                    secondCard.classList.add('matched');
+                    resetBoard(); 
+                }, 800);
             }
         }
 
@@ -296,13 +301,11 @@
         }
 
         function endGame(time) {
-            setTimeout(() => {
-                document.getElementById('game-screen').classList.add('hidden');
-                document.getElementById('result-screen').classList.remove('hidden');
-                document.getElementById('final-record').innerText = `기록: ${time}초`;
-                const rankKey = `${currentLevel} (${currentCardCount}장)`;
-                saveScore(userName, parseFloat(time), rankKey);
-            }, 500);
+            document.getElementById('game-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            document.getElementById('final-record').innerText = `기록: ${time}초`;
+            const rankKey = `${currentLevel} (${currentCardCount}장)`;
+            saveScore(userName, parseFloat(time), rankKey);
         }
 
         function saveScore(name, time, mode) {
