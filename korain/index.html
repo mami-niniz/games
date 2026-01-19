@@ -174,6 +174,7 @@
             z-index: 10;
         }
 
+        /* 컨트롤 영역 */
         .control-area {
             position: relative;
             width: 100%;
@@ -189,6 +190,7 @@
             box-shadow: 0 -10px 20px rgba(0,0,0,0.05);
         }
 
+        /* PC 기본 곰돌이 */
         .bear-avatar {
             width: 120px; height: 120px;
             border-radius: 50%;
@@ -241,6 +243,7 @@
         th { background: #e1f5fe; color: #0277bd; }
         .rank-1 { color: #ff6f00; font-size: 1.2em; text-shadow: 1px 1px 0 #ffe0b2; }
         
+        /* ★ 모바일 최적화 수정 (곰돌이 안으로 넣기) */
         @media (max-width: 650px) {
             .game-box { padding: 25px 20px; margin-top: 20px; }
             .intro-header { flex-direction: column; gap: 10px; margin-bottom: 20px; }
@@ -255,6 +258,22 @@
             .lvl-btn, .diff-btn { padding: 8px 12px; font-size: 16px; margin: 4px; }
             .start-btn { margin-top: 15px; padding: 15px 40px; font-size: 24px; }
 
+            /* 컨트롤 영역 레이아웃 재정리 */
+            .control-area {
+                padding-top: 10px; 
+            }
+
+            /* ★ 곰돌이를 박스 안으로 얌전히 넣기 */
+            .bear-avatar {
+                position: static; 
+                width: 70px; 
+                height: 70px; 
+                top: auto; 
+                border-width: 3px; 
+                margin-bottom: 5px; 
+            }
+
+            /* 버튼 2개씩 배치 & 좌우 꽉 채우기 */
             .answers-grid { 
                 grid-template-columns: 1fr 1fr !important;
                 gap: 8px; 
@@ -269,15 +288,6 @@
                 font-size: 18px !important; 
                 margin-bottom: 5px !important;
                 padding: 0 10px;
-            }
-            
-            .bear-avatar { 
-                position: static;
-                width: 70px; 
-                height: 70px; 
-                top: auto; 
-                border-width: 3px; 
-                margin-bottom: 5px; 
             }
             
             .falling-word { font-size: 15px !important; padding: 8px 12px; }
@@ -352,7 +362,7 @@
         <img src="bear.png" class="char-img" style="width:160px; height:160px;" onerror="this.src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Animals/Bear.png'">
         <h1 style="color:#2e7d32">작전 성공!</h1>
         <h2 id="final-score" style="color: #ff6f00; font-size: 60px; margin:20px 0;">0점</h2>
-        <p style="font-size: 24px;">곰펜하이머 박사님이 아주 기뻐해요!</p>
+        <p id="result-message" style="font-size: 24px; word-break: keep-all; padding: 0 10px;">곰펜하이머 박사님이 아주 기뻐해요!</p>
         <button class="btn start-btn" style="background:#29b6f6; border-bottom: 5px solid #0288d1;" onclick="location.reload()">🔄 다시 하기</button>
     </div>
 
@@ -446,7 +456,7 @@
                 el: el,
                 x: randomX,
                 y: -80,
-                // ★ 속도 고정: 랜덤 제거 (항상 일정한 속도)
+                // ★ 속도 고정: 랜덤 제거
                 speed: 0.4 * gameSpeed, 
                 data: randItem
             });
@@ -578,6 +588,19 @@
             document.getElementById('result-screen').classList.remove('hidden');
             document.getElementById('final-score').innerText = score + "점";
             
+            // ★ 점수에 따른 멘트 변경 (구간 세분화)
+            let message = "";
+            if (score === 0) {
+                message = "아이쿠... 박사님이 시무룩해졌어요. 🐻💧";
+            } else if (score <= 50) {
+                message = "조금 더 분발해 볼까요? 아자아자! 🐻✊";
+            } else if (score < 80) {
+                message = "노력하면 정말 잘할수 있어요! 🐻👍";
+            } else {
+                message = "대단해요! 박사님이 아주 기뻐해요! 🐻🎉";
+            }
+            document.getElementById('result-message').innerText = message;
+
             let spdText = (gameSpeed === 1) ? "천천히" : (gameSpeed === 1.5 ? "보통" : "빠름");
             saveScore(userName, score, `${currentLevel} (${spdText})`);
         }
