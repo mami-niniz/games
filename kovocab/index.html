@@ -7,24 +7,54 @@
     <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Jua', sans-serif; background: #fff9c4; text-align: center; margin: 0; padding: 20px; }
-        .game-box { background: white; border-radius: 20px; padding: 30px; max-width: 1200px; margin: 0 auto; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border: 5px solid #ffca28; }
+        .game-box { background: white; border-radius: 20px; padding: 30px; max-width: 1000px; margin: 0 auto; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border: 5px solid #ffca28; }
         .hidden { display: none !important; }
         
-        h1 { color: #d84315; margin-bottom: 10px; word-break: keep-all; font-size: 36px; text-shadow: 2px 2px 0px #fff; }
-        
-        /* ★ 캐릭터 이미지 스타일 */
+        /* ★ 헤더 레이아웃 수정: 가로 배치 */
+        .intro-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 30px; /* 이미지와 글자 사이 간격 */
+            margin-bottom: 30px;
+        }
+
+        /* ★ 캐릭터 이미지 스타일 (더 크게) */
         .character-area {
-            margin-bottom: 15px;
             animation: bounce 2s infinite;
+            flex-shrink: 0; /* 이미지 찌그러짐 방지 */
         }
         .char-img {
-            width: 160px;       /* 이미지 크기 */
-            height: 160px;
-            object-fit: cover;  /* 비율 유지하며 꽉 채우기 */
-            border-radius: 50%; /* 동그랗게 만들기 */
-            border: 6px solid white; /* 흰색 테두리 */
-            box-shadow: 0 8px 15px rgba(0,0,0,0.2); /* 그림자 효과 */
+            width: 230px;       /* 이미지 크기 대폭 확대 */
+            height: 230px;
+            object-fit: cover;  
+            border-radius: 50%; 
+            border: 8px solid white; 
+            box-shadow: 0 8px 15px rgba(0,0,0,0.2); 
             background-color: #fff;
+        }
+
+        /* ★ 제목 영역 스타일 (왼쪽 정렬) */
+        .title-area {
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        h1 { 
+            color: #d84315; 
+            margin: 0 0 10px 0; 
+            word-break: keep-all; 
+            font-size: 48px; /* 제목 크기 키움 */
+            line-height: 1.2;
+            text-shadow: 3px 3px 0px #fff; 
+        }
+
+        .desc-text {
+            color: #777; 
+            font-size: 22px;
+            margin: 0;
         }
 
         @keyframes bounce {
@@ -106,26 +136,36 @@
         th { background: #fff3e0; color: #555; }
         .rank-1 { color: #ff6f00; font-size: 1.3em; text-shadow: 1px 1px 0 #ffe0b2; }
         
-        @media (max-width: 600px) {
+        /* 모바일 대응: 화면 좁으면 다시 세로로 배치 */
+        @media (max-width: 650px) {
+            .intro-header { flex-direction: column; gap: 10px; }
+            .title-area { text-align: center; }
+            .char-img { width: 160px; height: 160px; }
+            h1 { font-size: 32px; }
+            .desc-text { font-size: 18px; margin-bottom: 10px; }
+
             .game-board { gap: 10px; row-gap: 10px; }
             .lvl-btn, .diff-btn { width: 45%; margin: 5px 2px; height: 55px;}
             input[type="text"] { width: 80%; }
             .front { font-size: 40px; }
             .back { font-size: 20px; border-width: 3px; padding: 2px;}
             .back.is-word { font-size: 28px; }
-            h1 { font-size: 28px; }
-            .char-img { width: 120px; height: 120px; } /* 모바일에서 이미지 조금 작게 */
         }
     </style>
 </head>
 <body>
 
     <div id="intro-screen" class="game-box">
-        <div class="character-area">
-            <img src="dog.png" alt="개슈타인 박사님" class="char-img" onerror="this.src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Animals/Dog%20Face.png'">
+        
+        <div class="intro-header">
+            <div class="character-area">
+                <img src="dog.png" alt="개슈타인 박사님" class="char-img" onerror="this.src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Animals/Dog%20Face.png'">
             </div>
-        <h1>개슈타인 박사님의<br>어휘 쏙쏙!</h1>
-        <p style="color:#777; margin-bottom: 20px;">단어의 짝꿍을 찾아보세요!</p>
+            <div class="title-area">
+                <h1>개슈타인 박사님의<br>어휘 쏙쏙!</h1>
+                <p class="desc-text">단어의 짝꿍을 찾아보세요!</p>
+            </div>
+        </div>
 
         <input type="text" id="username" placeholder="이름을 입력하세요" maxlength="8">
         
@@ -167,12 +207,12 @@
     </div>
 
     <div id="result-screen" class="game-box hidden">
-        <div class="character-area">
-             <img src="dog.png" alt="개슈타인 박사님" class="char-img" onerror="this.src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Animals/Dog%20Face.png'">
+        <div class="character-area" style="margin-bottom: 20px;">
+             <img src="dog.png" alt="개슈타인 박사님" class="char-img" style="width:180px; height:180px;" onerror="this.src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Animals/Dog%20Face.png'">
         </div>
-        <h1 style="color:#2e7d32">참 잘했어요!</h1>
+        <h1 style="color:#2e7d32; font-size:40px;">참 잘했어요!</h1>
         <h2 id="final-record" style="color: #d84315; font-size: 40px; margin: 10px 0;">기록: 0.0초</h2>
-        <p>개슈타인 박사님이 칭찬합니다! 왈왈!</p>
+        <p style="font-size: 20px;">개슈타인 박사님이 칭찬합니다! 왈왈!</p>
         <button class="btn start-btn" style="background:#66bb6a; border-bottom: 5px solid #2e7d32;" onclick="location.reload()">🔄 다시 하기</button>
     </div>
 
