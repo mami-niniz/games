@@ -13,8 +13,7 @@
             text-align: center; 
             margin: 0; 
             padding: 0; 
-            /* overflow: hidden;  <-- 이거 삭제! (시작 화면에서 스크롤 가능하게) */
-            min-height: 100vh;    /* 최소 높이 설정 */
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -27,7 +26,7 @@
             max-width: 900px; 
             width: 90%;
             margin-top: 50px;
-            margin-bottom: 50px; /* 아래쪽 여백 확보 */
+            margin-bottom: 50px;
             box-shadow: 0 10px 25px rgba(0,188,212,0.3); 
             border: 5px solid #fff;
         }
@@ -112,14 +111,13 @@
             border-radius: 20px;
         }
 
-        /* ★ 게임 화면: 여기서만 스크롤을 막습니다 (fixed) */
         #game-screen {
-            position: fixed; /* 화면 고정 */
+            position: fixed;
             top: 0; left: 0;
             width: 100%;
             height: 100%;
             background: linear-gradient(180deg, #81d4fa 0%, #b3e5fc 100%);
-            overflow: hidden; /* 게임 중 스크롤 방지 */
+            overflow: hidden;
             display: none; 
             z-index: 999;
         }
@@ -150,23 +148,31 @@
         }
         .home-btn:hover { background: #f5f5f5; }
 
+        /* ★ 떨어지는 요소 스타일 (문장이므로 너비 조정) */
         .falling-word {
             position: absolute;
             color: #01579b; 
-            font-size: 32px; 
+            font-size: 22px; /* 문장이 길 수 있어서 폰트 크기 살짝 조정 */
             font-weight: bold;
             background: white;
-            padding: 10px 20px;
-            border-radius: 30px;
-            border: 4px solid #4fc3f7; 
-            white-space: nowrap;
+            padding: 12px 20px;
+            border-radius: 20px;
+            border: 3px solid #4fc3f7; 
             box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+            
+            /* 긴 문장 처리 */
+            max-width: 80%; /* 화면 너비의 80%까지만 차지 */
+            white-space: normal; /* 줄바꿈 허용 */
+            word-break: keep-all; /* 단어 단위로 줄바꿈 */
+            line-height: 1.3;
+            text-align: center;
         }
+        
         .target-word {
             background: #fff3e0;
             color: #d84315;
             border-color: #ff7043;
-            transform: scale(1.15);
+            transform: scale(1.05); /* 문장이라 너무 커지면 안됨 */
             box-shadow: 0 0 20px #ffccbc;
             z-index: 10;
         }
@@ -206,13 +212,15 @@
             padding: 0 20px;
             box-sizing: border-box;
         }
+        /* ★ 버튼 스타일: 단어가 들어가므로 글씨를 아주 크게 */
         .ans-btn {
             background: #f1f8e9; 
             color: #33691e;
             border: 2px solid #aed581;
             border-radius: 15px;
             padding: 20px; 
-            font-size: 26px; 
+            font-size: 32px; /* 단어니까 시원하게 32px! */
+            font-weight: bold;
             font-family: 'Jua', sans-serif;
             cursor: pointer;
             transition: 0.1s;
@@ -237,29 +245,28 @@
         th { background: #e1f5fe; color: #0277bd; }
         .rank-1 { color: #ff6f00; font-size: 1.2em; text-shadow: 1px 1px 0 #ffe0b2; }
         
-        /* ★ 모바일 최적화 (잘림 방지) */
         @media (max-width: 650px) {
-            .game-box { padding: 25px 20px; margin-top: 20px; } /* 박스 여백 줄임 */
-            
+            .game-box { padding: 25px 20px; margin-top: 20px; }
             .intro-header { flex-direction: column; gap: 10px; margin-bottom: 20px; }
             .title-area { text-align: center; }
-            h1 { font-size: 40px; } /* 제목 크기 모바일용으로 조절 */
+            h1 { font-size: 40px; }
             .desc-text { font-size: 18px; }
-            .char-img { width: 150px; height: 150px; border-width: 5px; } /* 이미지 크기 줄임 */
+            .char-img { width: 150px; height: 150px; border-width: 5px; }
             
-            /* 버튼과 입력창 간격 줄임 */
             input[type="text"] { margin-bottom: 15px; padding: 10px; font-size: 20px; }
             div[style*="margin: 30px 0"] { margin: 15px 0 !important; } 
             
             .lvl-btn, .diff-btn { padding: 8px 12px; font-size: 16px; margin: 4px; }
             .start-btn { margin-top: 15px; padding: 15px 40px; font-size: 24px; }
 
-            /* 게임 화면 조정 */
             .answers-grid { grid-template-columns: 1fr; gap: 8px; margin-top: 50px; }
-            .ans-btn { padding: 15px; font-size: 20px; }
+            .ans-btn { padding: 15px; font-size: 24px; }
             .home-btn { top: 10px; right: 10px; font-size: 14px; padding: 5px 12px; }
             .hud { font-size: 20px; padding: 0 15px; top: 15px; }
             .control-area { height: 320px; }
+            
+            /* 모바일에서 떨어지는 문장 폰트 조절 */
+            .falling-word { font-size: 18px; padding: 10px 15px; }
         }
 
     </style>
@@ -271,7 +278,7 @@
             <img src="bear.png" alt="곰펜하이머" class="char-img" onerror="this.src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Animals/Bear.png'">
             <div class="title-area">
                 <h1>곰펜하이머의<br>단어 방어작전</h1>
-                <p class="desc-text">떨어지는 단어 풍선을 터뜨려주세요!</p>
+                <p class="desc-text">문장에 맞는 단어를 찾아주세요!</p>
             </div>
         </div>
 
@@ -295,8 +302,10 @@
         <button class="btn start-btn" onclick="startGame()">작전 시작! ▶</button>
 
         <div style="margin-top: 30px; border-top: 2px dashed #cfd8dc; padding-top:20px;">
-            <h3>🏆 명예의 전당</h3>
-            <table id="ranking-table"><tr><td>로딩중...</td></tr></table>
+            <h3 style="color:#0277bd; font-size: 28px;">🏆 명예의 전당</h3>
+            <table id="ranking-table">
+                <tr><td>기록 불러오는 중...</td></tr>
+            </table>
         </div>
     </div>
 
@@ -311,7 +320,7 @@
 
         <div class="control-area">
             <img src="bear.png" class="bear-avatar" onerror="this.src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Animals/Bear.png'">
-            <div id="question-text" style="margin-top: 40px; font-size: 24px; color: #0277bd;">가장 아래 단어의 뜻은?</div>
+            <div id="question-text" style="margin-top: 40px; font-size: 24px; color: #0277bd;">내려오는 뜻에 맞는 단어는?</div>
             
             <div class="answers-grid" id="answers-box">
                 <button class="ans-btn">보기1</button>
@@ -405,18 +414,20 @@
             const sky = document.getElementById('sky-area');
             const el = document.createElement('div');
             el.classList.add('falling-word');
-            el.innerText = randItem.word;
+            
+            // ★ 중요 변경: 내려오는 것은 '뜻(문장)' 입니다!
+            el.innerText = randItem.mean;
             
             const randomX = 10 + Math.random() * 70;
             el.style.left = randomX + '%';
-            el.style.top = '-60px'; 
+            el.style.top = '-80px'; 
             
             sky.appendChild(el);
 
             activeWords.push({
                 el: el,
                 x: randomX,
-                y: -60,
+                y: -80,
                 speed: (0.3 + Math.random() * 0.3) * gameSpeed, 
                 data: randItem
             });
@@ -482,9 +493,8 @@
                 const btn = document.createElement('button');
                 btn.className = 'ans-btn';
                 
-                let text = opt.mean;
-                if(text.length > 20) text = text.substring(0, 20) + "..."; 
-                btn.innerText = text;
+                // ★ 중요 변경: 버튼에 들어가는 것은 '단어' 입니다!
+                btn.innerText = opt.word;
                 
                 btn.onclick = () => checkAnswer(opt, correctItem);
                 container.appendChild(btn);
@@ -569,6 +579,8 @@
 
         function loadRanking() {
             const table = document.getElementById('ranking-table');
+            if(!table) return;
+
             let records = JSON.parse(localStorage.getItem('bearGameRank')) || [];
             
             let html = `<tr><th>순위</th><th>이름</th><th>모드</th><th>점수</th></tr>`;
@@ -586,7 +598,7 @@
             });
 
             if (records.length === 0) {
-                html += `<tr><td colspan="4">아직 기록이 없습니다. 1등을 노려보세요!</td></tr>`;
+                html += `<tr><td colspan="4" style="padding:30px 0; color:#0277bd; font-size:22px;">아직 기록이 없어요.<br>1등에 도전하세요! 🐻🎈</td></tr>`;
             }
             
             table.innerHTML = html;
