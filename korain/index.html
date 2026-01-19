@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>곰펜하이머의 단어 방어작전</title>
+    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Jua&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'Jua', sans-serif; 
+            background-color: #263238; /* 칠판/실험실 느낌의 어두운 색 */
+            color: white;
+            text-align: center; 
+            margin: 0; 
+            padding: 0; 
+            overflow: hidden; /* 스크롤 방지 */
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* ★ 공통 박스 스타일 */
+        .game-box { 
+            background: #37474f; 
+            border-radius: 20px; 
+            padding: 30px; 
+            max-width: 900px; 
+            width: 90%;
+            margin-top: 50px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.5); 
+            border: 4px solid #cfd8dc;
+        }
+        .hidden { display: none !important; }
+
+        /* ★ 헤더 레이아웃 (가로 배치) */
+        .intro-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        /* 캐릭터 이미지 */
+        .char-img {
+            width: 220px;
+            height: 220px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 6px solid #ffab00;
+            background: #fff;
+            box-shadow: 0 0 20px rgba(255, 171, 0, 0.5);
+            flex-shrink: 0;
+        }
+
+        /* 제목 영역 */
+        .title-area {
+            text-align: left;
+        }
+
+        h1 { 
+            font-family: 'Black Han Sans', sans-serif; 
+            color: #ffab00; 
+            font-size: 48px; 
+            margin: 0 0 10px 0;
+            line-height: 1.1;
+            text-shadow: 3px 3px 0 #000;
+        }
+        
+        .desc-text {
+            font-size: 22px;
+            color: #b0bec5;
+            margin: 0;
+        }
+
+        /* 입력창 & 버튼 */
+        input[type="text"] { padding: 12px; font-size: 20px; border-radius: 10px; border: 3px solid #ffab00; width: 60%; font-family: 'Jua', sans-serif; text-align: center; margin-bottom: 20px; background: #eceff1; }
+        
+        .btn { padding: 10px 15px; margin: 5px; font-size: 18px; cursor: pointer; border: none; border-radius: 10px; color: #263238; font-weight: bold; transition: all 0.1s; font-family: 'Jua', sans-serif; box-shadow: 0 4px 0 rgba(0,0,0,0.3); }
+        .btn:active { transform: translateY(4px); box-shadow: none; }
+        
+        .lvl-btn { background: #b0bec5; }
+        .lvl-btn.active { background: #00bcd4; color: white; border: 2px solid #fff; }
+        
+        .diff-btn { background: #ffcc80; }
+        .diff-btn.active { background: #ff6f00; color: white; border: 2px solid #fff; }
+
+        .start-btn { background: #f44336; color: white; font-size: 24px; padding: 15px 40px; margin-top: 20px; width: 80%; border-bottom: 5px solid #b71c1c;}
+
+        /* ★ 게임 화면 레이아웃 */
+        #game-screen {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            background: radial-gradient(circle, #37474f 0%, #102027 100%);
+            overflow: hidden;
+            display: none; 
+        }
+
+        /* 상단 정보창 */
+        .hud {
+            position: absolute;
+            top: 10px; left: 0; width: 100%;
+            display: flex; justify-content: space-between;
+            padding: 0 20px; box-sizing: border-box;
+            font-size: 24px; z-index: 100;
+            text-shadow: 2px 2px 0 #000;
+        }
+
+        /* 떨어지는 단어 스타일 */
+        .falling-word {
+            position: absolute;
+            color: #fff;
+            font-size: 26px;
+            font-weight: bold;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 8px 15px;
+            border-radius: 10px;
+            border: 2px solid #ffab00;
+            white-space: nowrap;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        /* 타겟(가장 아래) 단어 강조 */
+        .target-word {
+            background: #d84315;
+            border-color: #ff5722;
+            transform: scale(1.15);
+            box-shadow: 0 0 20px #ff5722;
+            z-index: 10;
+        }
+
+        /* ★ 하단 컨트롤 영역 (곰 + 버튼) */
+        .control-area {
+            position: absolute;
+            bottom: 0; left: 0; width: 100%;
+            height: 300px; 
+            background: rgba(0,0,0,0.85);
+            border-top: 4px solid #546e7a;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+        }
+
+        .bear-avatar {
+            width: 110px; height: 110px;
+            border-radius: 50%;
+            border: 4px solid #fff;
+            position: absolute;
+            top: -55px; /* 박스 위로 튀어나오게 */
+            background: #37474f;
+            z-index: 60;
+            object-fit: cover;
+        }
+
+        /* 정답 버튼들 */
+        .answers-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            width: 90%;
+            max-width: 800px;
+            margin-top: 50px;
+        }
+        .ans-btn {
+            background: #eceff1;
+            color: #333;
+            border: none;
+            border-radius: 12px;
+            padding: 18px;
+            font-size: 20px;
+            font-family: 'Jua', sans-serif;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 5px 0 #b0bec5;
+        }
+        .ans-btn:active { transform: translateY(4px); box-shadow: none; }
+        .ans-btn:hover { background: #fff; }
+
+        /* 레이저 효과 */
+        .laser {
+            position: absolute;
+            width: 6px;
+            background: #00e676;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 5;
+            box-shadow: 0 0 15px #00e676;
+            border-radius: 3px;
+        }
+
+        /* 랭킹 테이블 */
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 16px; color: #fff;}
+        th, td { padding: 8px; border-bottom: 1px solid #546e7a; text-align: center; }
+        th { background: #455a64; color: #ffab00; }
+        .rank-1 { color: #ffd700; font-size: 1.2em; }
+        
+        /* 모바일 대응 */
+        @media (max-width: 650px) {
+            .intro-header { flex-direction: column; gap: 15px; }
+            .title-area { text-align: center; }
+            h1 { font-size: 36px; }
+            .char-img { width: 160px; height: 160px; }
+            .answers-grid { grid-template-columns: 1fr; gap: 8px; margin-top: 40px;} /* 모바일은 1줄로 */
+            .ans-btn { padding: 12px; font-size: 18px; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="intro-screen" class="game-box">
+        <div class="intro-header">
+            <img src="bear.png" alt="곰펜하이머" class="char-img" onerror="this.src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Animals/Bear.png'">
+            <div class="title-area">
+                <h1>곰펜하이머의<br>단어 방어작전</h1>
+                <p class="desc-text">떨어지는 단어 폭탄을 막아주세요!</p>
+            </div>
+        </div>
+
+        <input type="text" id="username" placeholder="이름을 입력하세요" maxlength="8">
+
+        <div style="margin: 20px 0;">
+            <p style="margin-bottom:5px;">📚 학년 선택</p>
+            <button class="btn lvl-btn active" onclick="selectLevel('1-2', this)">1-2학년</button>
+            <button class="btn lvl-btn" onclick="selectLevel('3-4', this)">3-4학년</button>
+            <button class="btn lvl-btn" onclick="selectLevel('5-6', this)">5-6학년</button>
+            <button class="btn lvl-btn" onclick="selectLevel('중1', this)">중1</button>
+        </div>
+
+        <div style="margin: 20px 0;">
+            <p style="margin-bottom:5px;">🔥 속도 선택</p>
+            <button class="btn diff-btn active" onclick="selectSpeed(1, this)">보통</button>
+            <button class="btn diff-btn" onclick="selectSpeed(1.5, this)">빠름</button>
+            <button class="btn diff-btn" onclick="selectSpeed(2, this)">매우 빠름</button>
+        </div>
+
+        <button class="btn start-btn" onclick="startGame()">작전 시작! ▶</button>
+
+        <div style="margin-top: 20px; border-top: 1px dashed #78909c; padding-top:10px;">
+            <h3>🏆 명예의 전당</h3>
+            <table id="ranking-table"><tr><td>로딩중...</td></tr></table>
+        </div>
+    </div>
+
+    <div id="game-screen">
+        <div class="hud">
+            <span>🛡️ <span id="score-display">0</span>점</span>
+            <span>❤️ <span id="life-display">5</span></span>
+        </div>
+
+        <div id="sky-area" style="position:absolute; top:0; left:0; width:100%; height:calc(100vh - 300px);"></div>
+
+        <div class="control-area">
+            <img src="bear.png" class="bear-avatar" onerror="this.src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Animals/Bear.png'">
+            <div id="question-text" style="margin-top: 30px; font-size: 20px; color: #ffab00; text-shadow: 1px 1px 0 #000;">가장 아래 단어를 맞추세요!</div>
+            
+            <div class="answers-grid" id="answers-box">
+                <button class="ans-btn">보기1</button>
+                <button class="ans-btn">보기2</button>
+                <button class="ans-btn">보기3</button>
+                <button class="ans-btn">보기4</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="result-screen" class="game-box hidden">
+        <img src="bear.png" class="char-img" style="width:140px; height:140px;" onerror="this.src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Animals/Bear.png'">
+        <h1>작전 종료!</h1>
+        <h2 id="final-score" style="color: #ffab00; font-size: 50px; margin:10px 0;">0점</h2>
+        <p>곰펜하이머 박사님이 고마워합니다!</p>
+        <button class="btn start-btn" style="background:#00bcd4; border-bottom: 5px solid #0097a7;" onclick="location.reload()">🔄 다시 하기</button>
+    </div>
+
+    <script src="../kovocab/my_word_data.js"></script> 
+    
+    <script>
+        // 비상용 샘플 데이터 (파일 로드 실패 시)
+        if (typeof wordData === 'undefined') {
+            var wordData = { "1-2": [{word:"사과",mean:"과일"}, {word:"바나나",mean:"노란과일"}] };
+            wordData["3-4"] = wordData["5-6"] = wordData["중1"] = wordData["1-2"];
+            alert("⚠️ 데이터 파일을 찾을 수 없습니다! 폴더 구조를 확인해주세요.\n( ../kovocab/my_word_data.js )");
+        }
+
+        let currentLevel = "1-2";
+        let gameSpeed = 1; 
+        let spawnRate = 2000; 
+        let userName = "";
+        
+        let score = 0;
+        let life = 5;
+        let isGameOver = false;
+        
+        let activeWords = []; 
+        let gameLoopId;
+        let spawnIntervalId;
+        
+        let targetWord = null; 
+
+        window.onload = loadRanking;
+
+        function selectLevel(lvl, btn) {
+            currentLevel = lvl;
+            document.querySelectorAll('.lvl-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
+        function selectSpeed(spd, btn) {
+            gameSpeed = spd;
+            if(spd === 1) spawnRate = 2500;
+            else if(spd === 1.5) spawnRate = 1800;
+            else spawnRate = 1200;
+
+            document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
+        function startGame() {
+            const inputName = document.getElementById('username').value.trim();
+            if (!inputName) { alert("박사님이 이름을 물어보십니다!"); return; }
+            userName = inputName;
+
+            if(!wordData[currentLevel] || wordData[currentLevel].length < 10) {
+                 alert("데이터가 부족합니다! (최소 10개 필요)"); return;
+            }
+
+            document.getElementById('intro-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('game-screen').style.display = 'block';
+
+            score = 0; life = 5; isGameOver = false; activeWords = [];
+            updateHUD();
+            
+            gameLoopId = requestAnimationFrame(gameLoop);
+            spawnIntervalId = setInterval(spawnWord, spawnRate);
+            
+            checkTarget();
+        }
+
+        function spawnWord() {
+            if(isGameOver) return;
+            
+            const data = wordData[currentLevel];
+            const randItem = data[Math.floor(Math.random() * data.length)];
+            
+            const sky = document.getElementById('sky-area');
+            const el = document.createElement('div');
+            el.classList.add('falling-word');
+            el.innerText = randItem.word;
+            
+            const randomX = 10 + Math.random() * 70;
+            el.style.left = randomX + '%';
+            el.style.top = '-50px';
+            
+            sky.appendChild(el);
+
+            activeWords.push({
+                el: el,
+                x: randomX,
+                y: -50,
+                speed: (0.5 + Math.random() * 0.5) * gameSpeed, 
+                data: randItem
+            });
+        }
+
+        function gameLoop() {
+            if(isGameOver) return;
+
+            const skyHeight = document.getElementById('sky-area').clientHeight;
+
+            activeWords.forEach((obj, index) => {
+                obj.y += obj.speed;
+                obj.el.style.top = obj.y + 'px';
+
+                if (obj.y > skyHeight - 30) {
+                    activeWords.splice(index, 1);
+                    obj.el.remove();
+                    loseLife();
+                }
+            });
+
+            checkTarget(); 
+            gameLoopId = requestAnimationFrame(gameLoop);
+        }
+
+        function checkTarget() {
+            if (activeWords.length === 0) {
+                targetWord = null;
+                return;
+            }
+
+            let lowestWord = activeWords[0];
+            activeWords.forEach(w => {
+                w.el.classList.remove('target-word'); 
+                if(w.y > lowestWord.y) lowestWord = w;
+            });
+
+            lowestWord.el.classList.add('target-word'); 
+            
+            if (targetWord !== lowestWord) {
+                targetWord = lowestWord;
+                updateButtons(targetWord.data);
+            }
+        }
+
+        function updateButtons(correctItem) {
+            const container = document.getElementById('answers-box');
+            container.innerHTML = '';
+            
+            const data = wordData[currentLevel];
+            let options = [correctItem];
+            
+            while(options.length < 4) {
+                const rand = data[Math.floor(Math.random() * data.length)];
+                if(!options.find(o => o.word === rand.word)) {
+                    options.push(rand);
+                }
+            }
+            
+            options.sort(() => 0.5 - Math.random());
+            
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'ans-btn';
+                
+                let text = opt.mean;
+                if(text.length > 25) text = text.substring(0, 25) + "...";
+                btn.innerText = text;
+                
+                btn.onclick = () => checkAnswer(opt, correctItem);
+                container.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(selected, correct) {
+            if(isGameOver) return;
+            
+            if (selected.word === correct.word) {
+                score += 10;
+                updateHUD();
+                destroyTarget();
+            } else {
+                loseLife();
+                document.body.style.backgroundColor = "#b71c1c";
+                setTimeout(() => document.body.style.backgroundColor = "#263238", 100);
+            }
+        }
+
+        function destroyTarget() {
+            if(!targetWord) return;
+            
+            const laser = document.createElement('div');
+            laser.className = 'laser';
+            const targetTop = targetWord.y;
+            const bearTop = document.getElementById('sky-area').clientHeight; 
+            laser.style.height = (bearTop - targetTop) + "px";
+            laser.style.bottom = "0px"; 
+            laser.style.left = targetWord.x + "%";
+            laser.style.top = targetTop + "px";
+            
+            document.getElementById('sky-area').appendChild(laser);
+            
+            setTimeout(() => laser.remove(), 100); 
+
+            targetWord.el.remove();
+            const idx = activeWords.indexOf(targetWord);
+            if(idx > -1) activeWords.splice(idx, 1);
+            
+            targetWord = null;
+            checkTarget(); 
+        }
+
+        function loseLife() {
+            life--;
+            updateHUD();
+            if(life <= 0) gameOver();
+        }
+
+        function updateHUD() {
+            document.getElementById('score-display').innerText = score;
+            document.getElementById('life-display').innerText = life;
+        }
+
+        function gameOver() {
+            isGameOver = true;
+            clearInterval(spawnIntervalId);
+            cancelAnimationFrame(gameLoopId);
+            
+            document.getElementById('game-screen').style.display = 'none';
+            document.getElementById('result-screen').classList.remove('hidden');
+            document.getElementById('final-score').innerText = score + "점";
+            
+            let spdText = (gameSpeed === 1) ? "보통" : (gameSpeed === 1.5 ? "빠름" : "매우빠름");
+            saveScore(userName, score, `${currentLevel} (${spdText})`);
+        }
+
+        function saveScore(name, score, mode) {
+            let records = JSON.parse(localStorage.getItem('bearGameRank')) || [];
+            records.push({ name: name, score: score, mode: mode, date: new Date().toLocaleDateString() });
+            records.sort((a, b) => b.score - a.score); 
+            localStorage.setItem('bearGameRank', JSON.stringify(records));
+        }
+
+        function loadRanking() {
+            const table = document.getElementById('ranking-table');
+            let records = JSON.parse(localStorage.getItem('bearGameRank')) || [];
+            
+            let html = `<tr><th>순위</th><th>이름</th><th>모드</th><th>점수</th></tr>`;
+            
+            records.slice(0, 5).forEach((r, index) => {
+                let badge = index === 0 ? '🥇' : (index === 1 ? '🥈' : (index === 2 ? '🥉' : index + 1));
+                html += `
+                    <tr>
+                        <td><span class="rank-${index+1}">${badge}</span></td>
+                        <td>${r.name}</td>
+                        <td><small>${r.mode}</small></td>
+                        <td>${r.score}점</td>
+                    </tr>
+                `;
+            });
+
+            if (records.length === 0) {
+                html += `<tr><td colspan="4">아직 기록이 없습니다. 1등을 노려보세요!</td></tr>`;
+            }
+            
+            table.innerHTML = html;
+        }
+    </script>
+</body>
+</html>
