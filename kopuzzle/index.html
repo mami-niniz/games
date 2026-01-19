@@ -10,10 +10,10 @@
 
         body { 
             font-family: 'Jua', sans-serif; 
-            background-color: #f6e8c3; /* 따뜻한 베이지색 */
+            background-color: #f6e8c3; 
             background-image: radial-gradient(#d7ccc8 1px, transparent 1px);
             background-size: 20px 20px;
-            color: #4e342e; /* 진한 갈색 */
+            color: #4e342e; 
             text-align: center; 
             margin: 0; 
             padding: 0; 
@@ -23,7 +23,6 @@
             align-items: center;
         }
 
-        /* ★ 공통 박스 스타일 */
         .game-box { 
             background: #fff8e1; 
             border-radius: 20px; 
@@ -32,12 +31,11 @@
             width: 95%;
             margin-top: 30px;
             margin-bottom: 30px;
-            box-shadow: 0 8px 0 #8d6e63; /* 나무 그림자 */
+            box-shadow: 0 8px 0 #8d6e63; 
             border: 4px solid #5d4037;
         }
         .hidden { display: none !important; }
 
-        /* 인트로 */
         .intro-header {
             display: flex;
             align-items: center;
@@ -67,7 +65,6 @@
         
         .desc-text { font-size: 20px; color: #795548; margin-top: 5px; }
 
-        /* 입력창 및 버튼 */
         input[type="text"] { 
             padding: 12px; 
             font-size: 20px; 
@@ -99,14 +96,13 @@
             border-bottom: 5px solid #3e2723;
         }
 
-        /* ★ 게임 화면 */
         #game-screen {
             width: 100%;
             max-width: 600px;
             display: none;
             flex-direction: column;
             align-items: center;
-            padding-bottom: 120px; /* 하단 입력창 공간 확보 */
+            padding-bottom: 140px; 
         }
 
         .hud {
@@ -125,7 +121,6 @@
             z-index: 10;
         }
 
-        /* 십자말풀이 그리드 */
         .crossword-container {
             margin-top: 20px;
             padding: 10px;
@@ -142,37 +137,27 @@
             border: 1px solid #5d4037;
             text-align: center;
             font-size: 20px;
-            background: #3e2723; /* 빈 칸은 어두운 색 */
+            background: #3e2723; 
             color: transparent;
             cursor: default;
             position: relative;
         }
 
-        /* 글자가 들어가는 칸 */
         td.letter-cell {
             background: #fff8e1;
-            color: transparent; /* 아직 못 맞췄으면 투명 */
+            color: transparent; 
             font-weight: bold;
             cursor: pointer;
         }
         
-        /* 내가 선택한 단어의 칸들 */
-        td.active-word {
-            background: #fff59d; /* 노란색 강조 */
-        }
-
-        /* 현재 선택된 바로 그 칸 */
-        td.active-cell {
-            background: #ffcc80; /* 주황색 강조 */
-        }
+        td.active-word { background: #fff59d; }
+        td.active-cell { background: #ffcc80; }
         
-        /* 정답을 맞춘 칸 */
         td.solved {
-            color: #3e2723; /* 글자 보임 */
-            background: #c8e6c9; /* 초록색 배경 */
+            color: #3e2723; 
+            background: #c8e6c9; 
         }
 
-        /* 번호 표시 (작게) */
         .cell-num {
             position: absolute;
             top: 1px; left: 2px;
@@ -182,7 +167,6 @@
             font-weight: bold;
         }
 
-        /* ★ 하단 입력 컨트롤 (고정) */
         .input-area {
             position: fixed;
             bottom: 0; left: 0; right: 0;
@@ -225,7 +209,7 @@
             border-radius: 10px;
             text-align: center;
             font-family: 'Jua', sans-serif;
-            margin-bottom: 0; /* 상단 스타일 덮어쓰기 */
+            margin-bottom: 0; 
         }
 
         .submit-btn {
@@ -239,7 +223,9 @@
             cursor: pointer;
         }
 
-        /* 명예의 전당 테이블 */
+        .shake { animation: shake 0.4s; border-color: #e53935; }
+        @keyframes shake { 0% { transform: translateX(0); } 25% { transform: translateX(-5px); } 50% { transform: translateX(5px); } 75% { transform: translateX(-5px); } 100% { transform: translateX(0); } }
+
         .rank-table { width: 100%; margin-top: 20px; border-collapse: collapse; font-size: 18px; }
         .rank-table th { background: #d7ccc8; padding: 8px; color: #3e2723; }
         .rank-table td { border-bottom: 1px solid #efebe9; padding: 8px; color: #5d4037; }
@@ -278,7 +264,7 @@
         </div>
 
         <div style="margin: 20px 0;">
-            <p style="margin-bottom:5px;">🧩 난이도 (단어 수)</p>
+            <p style="margin-bottom:5px;">🧩 난이도</p>
             <button class="btn diff-btn active" onclick="selectDifficulty(5, this)">쉬움</button>
             <button class="btn diff-btn" onclick="selectDifficulty(8, this)">보통</button>
             <button class="btn diff-btn" onclick="selectDifficulty(12, this)">어려움</button>
@@ -288,7 +274,7 @@
         <button class="btn start-btn" onclick="startGame()">퍼즐 시작 ▶</button>
 
         <div style="margin-top: 30px; border-top: 2px dashed #bcaaa4; padding-top:15px;">
-            <h3>🏆 명예의 전당 (빠른 순)</h3>
+            <h3>🏆 명예의 전당 (완료 시간)</h3>
             <table class="rank-table" id="ranking-table"><tr><td>로딩중...</td></tr></table>
         </div>
     </div>
@@ -325,23 +311,21 @@
     <script src="../kovocab/my_word_data.js"></script> 
 
     <script>
-        // --- 1. 기본 설정 및 데이터 ---
         if (typeof wordData === 'undefined') {
             alert("데이터 파일을 찾을 수 없습니다! (../kovocab/my_word_data.js 확인)");
             var wordData = { "1-2": [{word:"사과",mean:"과일"},{word:"과일",mean:"사과 등"}] };
         }
 
         let currentLevel = "1-2";
-        let targetWordCount = 5; // 목표 단어 수
+        let targetWordCount = 5; 
         let userName = "";
         let startTime;
         let timerInterval;
-        let activeWordInfo = null; // 현재 선택된 단어 정보
+        let activeWordInfo = null; 
         
-        // 십자말풀이 그리드 데이터 (20x20 가상 그리드)
         const gridSize = 20; 
         let grid = []; 
-        let placedWords = []; // 배치된 단어 정보 {word, mean, row, col, direction, number}
+        let placedWords = []; 
 
         window.onload = loadRanking;
 
@@ -367,7 +351,6 @@
                 alert("단어가 부족하구만.. 다른 학년을 골라보게."); return;
             }
 
-            // 퍼즐 생성 시도
             if (!generateCrossword(pool, targetWordCount)) {
                 alert("퍼즐을 만들기가 어렵구만. 다시 시도해보게나!"); return;
             }
@@ -380,57 +363,43 @@
             startTimer();
         }
 
-        // --- 2. 십자말풀이 생성 알고리즘 (핵심) ---
         function generateCrossword(pool, maxWords) {
-            // 1. 그리드 초기화
             grid = Array.from({ length: gridSize }, () => Array(gridSize).fill(null));
             placedWords = [];
-            let wordsToPlace = [...pool].sort(() => 0.5 - Math.random()); // 랜덤 섞기
+            let wordsToPlace = [...pool].sort(() => 0.5 - Math.random()); 
 
-            // 2. 첫 단어 배치 (중앙)
             let first = wordsToPlace.pop();
             let center = Math.floor(gridSize / 2);
             let startCol = center - Math.floor(first.word.length / 2);
             placeWordOnGrid(first, center, startCol, 'across');
 
-            // 3. 나머지 단어 배치 시도
             let attempts = 0;
             while (placedWords.length < maxWords && attempts < 1000 && wordsToPlace.length > 0) {
                 attempts++;
-                let candidate = wordsToPlace[0]; // 시도할 단어
+                let candidate = wordsToPlace[0]; 
                 let placed = false;
 
-                // 이미 배치된 단어들의 글자와 교차점 찾기
                 for (let pw of placedWords) {
                     if (placed) break;
                     
-                    // 교차 가능한 글자 찾기
                     for (let i = 0; i < candidate.word.length; i++) {
                         let char = candidate.word[i];
-                        // 배치된 단어에서 해당 글자 위치 찾기
                         for (let j = 0; j < pw.word.length; j++) {
                             if (pw.word[j] === char) {
-                                // 교차 시도
                                 let newDir = (pw.direction === 'across') ? 'down' : 'across';
                                 let newRow, newCol;
 
                                 if (newDir === 'down') {
-                                    newRow = pw.row + j - i;
-                                    newCol = pw.col + j; // 가로 단어의 j번째 글자 위치 (오류 수정: pw.col + j가 맞음, 세로 배치는 col 고정)
-                                    // 수정: 가로(across) 단어의 (row, col+j) 위치와 교차하려면
-                                    // 새 단어(down)는 (row-i, col+j)에서 시작해야 함.
                                     newRow = pw.row - i;
                                     newCol = pw.col + j;
-                                } else { // across
-                                    // 세로(down) 단어의 (row+j, col) 위치와 교차하려면
-                                    // 새 단어(across)는 (row+j, col-i)에서 시작해야 함.
+                                } else { 
                                     newRow = pw.row + j;
                                     newCol = pw.col - i;
                                 }
 
                                 if (canPlaceWord(candidate.word, newRow, newCol, newDir)) {
                                     placeWordOnGrid(candidate, newRow, newCol, newDir);
-                                    wordsToPlace.shift(); // 성공하면 목록에서 제거
+                                    wordsToPlace.shift(); 
                                     placed = true;
                                     break;
                                 }
@@ -440,19 +409,16 @@
                     }
                 }
                 
-                // 배치 실패 시 맨 뒤로 보내서 나중에 다시 시도 (혹은 버림)
                 if (!placed) {
                     wordsToPlace.push(wordsToPlace.shift());
-                    // 무한 루프 방지: 너무 많이 돌면 그냥 포기
                     if (attempts > 500) wordsToPlace.shift(); 
                 }
             }
 
-            // 번호 매기기
             placedWords.sort((a, b) => (a.row - b.row) || (a.col - b.col));
             placedWords.forEach((w, idx) => w.number = idx + 1);
 
-            return placedWords.length >= 3; // 최소 3개는 되어야 게임 가능
+            return placedWords.length >= 3; 
         }
 
         function canPlaceWord(word, row, col, dir) {
@@ -460,30 +426,18 @@
             if (dir === 'across' && col + word.length > gridSize) return false;
             if (dir === 'down' && row + word.length > gridSize) return false;
 
-            // 주변 간섭 체크
             for (let i = 0; i < word.length; i++) {
                 let r = row + (dir === 'down' ? i : 0);
                 let c = col + (dir === 'across' ? i : 0);
                 
-                // 현재 칸이 비어있지 않은데 글자가 다르면 실패
                 if (grid[r][c] !== null && grid[r][c] !== word[i]) return false;
 
-                // 교차점이 아닌 경우, 인접한 칸에 다른 글자가 있으면 안됨 (단어가 붙어버림)
                 if (grid[r][c] === null) {
-                    // 상하좌우 체크 (자세한 로직 생략하고 간단히)
                     let neighbors = 0;
                     if (r>0 && grid[r-1][c]) neighbors++;
                     if (r<gridSize-1 && grid[r+1][c]) neighbors++;
                     if (c>0 && grid[r][c-1]) neighbors++;
                     if (c<gridSize-1 && grid[r][c+1]) neighbors++;
-                    
-                    // 진행 방향의 앞뒤는 당연히 비어있어야 하고 (이는 루프 밖 체크 필요하지만)
-                    // 진행 방향의 수직 방향으로 인접한 글자가 있으면 안됨 (교차점 제외)
-                    // 이 로직은 복잡하므로, "이미 글자가 있는 칸(교차점)"이 아니면 주변이 깨끗해야 한다고 가정
-                    
-                    // 간단한 규칙: 교차점이 아니면, 상하좌우에 아무것도 없어야 안전
-                    // (조금 엄격하지만 생성 오류 방지)
-                    // 예외: 진행 방향의 바로 앞/뒤는 루프에서 처리 안되므로 별도 체크 필요
                 }
             }
             return true;
@@ -500,12 +454,10 @@
             }
         }
 
-        // --- 3. 렌더링 및 게임 로직 ---
         function renderGrid() {
             const table = document.getElementById('crossword-grid');
             table.innerHTML = '';
 
-            // 그리드 범위를 구해서 (최소한의 크기만 보여주기)
             let minR=gridSize, maxR=0, minC=gridSize, maxC=0;
             placedWords.forEach(w => {
                 minR = Math.min(minR, w.row);
@@ -513,7 +465,6 @@
                 minC = Math.min(minC, w.col);
                 maxC = Math.max(maxC, w.col + (w.direction==='across' ? w.word.length : 1));
             });
-            // 여백 추가
             minR = Math.max(0, minR-1); maxR = Math.min(gridSize, maxR+1);
             minC = Math.max(0, minC-1); maxC = Math.min(gridSize, maxC+1);
 
@@ -527,20 +478,17 @@
                         td.dataset.col = c;
                         td.onclick = () => onCellClick(r, c);
                         
-                        // 번호 표시
                         let wordStarts = placedWords.filter(w => w.row === r && w.col === c);
                         if(wordStarts.length > 0) {
                             let numSpan = document.createElement('span');
                             numSpan.className = 'cell-num';
-                            // 번호가 여러개일 수 있음 (가로/세로 시작점 공유)
                             numSpan.innerText = wordStarts.map(w=>w.number).join(',');
                             td.appendChild(numSpan);
                         }
                         
-                        // 글자 표시 (정답 맞춘 경우)
                         let solvedSpan = document.createElement('span');
                         solvedSpan.className = 'letter-content';
-                        solvedSpan.innerText = grid[r][c]; // CSS에서 color: transparent로 숨김
+                        solvedSpan.innerText = grid[r][c]; 
                         td.appendChild(solvedSpan);
                     }
                     tr.appendChild(td);
@@ -550,8 +498,6 @@
         }
 
         function onCellClick(r, c) {
-            // 해당 셀이 포함된 단어 찾기
-            // 우선순위: 아직 안 푼 단어 > 가로 > 세로
             let candidates = placedWords.filter(w => {
                 if (w.direction === 'across') return w.row === r && c >= w.col && c < w.col + w.word.length;
                 else return w.col === c && r >= w.row && r < w.row + w.word.length;
@@ -559,7 +505,6 @@
 
             if (candidates.length === 0) return;
 
-            // 이미 선택된 단어가 있고, 그 단어에 포함된 칸을 다시 누른 경우 -> 방향 전환 (교차점일 때)
             let selected = candidates[0];
             if (activeWordInfo && candidates.length > 1) {
                 if (activeWordInfo.word === candidates[0].word) selected = candidates[1];
@@ -571,13 +516,11 @@
         }
 
         function highlightWord(wordObj) {
-            // 모든 하이라이트 제거
             document.querySelectorAll('td').forEach(td => {
                 td.classList.remove('active-word');
                 td.classList.remove('active-cell');
             });
 
-            // 해당 단어 칸 하이라이트
             for(let i=0; i<wordObj.word.length; i++) {
                 let r = wordObj.row + (wordObj.direction === 'down' ? i : 0);
                 let c = wordObj.col + (wordObj.direction === 'across' ? i : 0);
@@ -607,11 +550,9 @@
             const userVal = input.value.trim();
 
             if (userVal === activeWordInfo.word) {
-                // 정답 처리
                 activeWordInfo.solved = true;
                 revealWord(activeWordInfo);
                 
-                // 입력창 초기화
                 input.value = '';
                 document.getElementById('input-group').style.visibility = 'hidden';
                 document.getElementById('clue-display').innerText = "참 잘했구만! 다음 칸을 눌러보게.";
@@ -619,11 +560,33 @@
 
                 checkGameClear();
             } else {
-                // 오답
-                input.classList.add('shake'); // (CSS 애니메이션 필요하지만 생략)
-                alert("허허.. 다시 생각해보게나.");
+                // 오답 시 즉시 힌트 제공
+                input.classList.add('shake');
+                setTimeout(() => input.classList.remove('shake'), 400);
+                
+                alert(`허허.. 틀렸구만. 힌트 한 글자 줌세.`);
+                giveHint(activeWordInfo);
+                
                 input.value = '';
                 input.focus();
+            }
+        }
+
+        function giveHint(wordObj) {
+            let unsolvedIndices = [];
+            for(let i=0; i<wordObj.word.length; i++) {
+                let r = wordObj.row + (wordObj.direction === 'down' ? i : 0);
+                let c = wordObj.col + (wordObj.direction === 'across' ? i : 0);
+                let td = document.querySelector(`td[data-row="${r}"][data-col="${c}"]`);
+                if(td && !td.classList.contains('solved')) {
+                    unsolvedIndices.push({r, c});
+                }
+            }
+
+            if (unsolvedIndices.length > 0) {
+                let target = unsolvedIndices[Math.floor(Math.random() * unsolvedIndices.length)];
+                let td = document.querySelector(`td[data-row="${target.r}"][data-col="${target.c}"]`);
+                if(td) td.classList.add('solved');
             }
         }
 
@@ -642,7 +605,6 @@
             }
         }
 
-        // --- 4. 타이머 및 결과 저장 ---
         function startTimer() {
             startTime = Date.now();
             timerInterval = setInterval(() => {
@@ -665,7 +627,7 @@
         function saveScore(name, time, mode) {
             let records = JSON.parse(localStorage.getItem('slothGameRank')) || [];
             records.push({ name: name, time: time, mode: mode, date: new Date().toLocaleDateString() });
-            records.sort((a, b) => a.time - b.time); // 시간 짧은 순
+            records.sort((a, b) => a.time - b.time); 
             localStorage.setItem('slothGameRank', JSON.stringify(records));
         }
 
