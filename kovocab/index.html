@@ -20,10 +20,9 @@
         .select-group { margin: 20px 0; border-bottom: 2px dashed #eee; padding-bottom: 20px; }
         .group-title { font-size: 18px; color: #555; margin-bottom: 10px; font-weight: bold;}
         
-        /* ★ 버튼 균일화 수정 */
         .btn-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
         .lvl-btn, .diff-btn { 
-            width: 100px; height: 60px; /* 너비와 높이 고정 */
+            width: 100px; height: 60px; 
             display: flex; align-items: center; justify-content: center;
             font-size: 16px; line-height: 1.2;
         }
@@ -33,32 +32,51 @@
         .diff-btn.active { background: #ffca28; color: black; box-shadow: 0 4px 10px rgba(255, 202, 40, 0.4); transform: scale(1.05); border: 2px solid orange; }
 
         .game-header { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 20px; color: #1565c0; font-weight: bold; }
-        .game-board { display: grid; gap: 8px; margin: 0 auto; perspective: 1000px; }
+        
+        /* ★ 게임 보드 & 카드 정사각형 스타일 수정 */
+        .game-board { 
+            display: grid; gap: 10px; margin: 0 auto; 
+            perspective: 1000px; 
+            justify-content: center; /* 가운데 정렬 */
+        }
 
-        .card { background-color: transparent; height: 100px; cursor: pointer; position: relative; transform-style: preserve-3d; transition: transform 0.4s; }
+        .card { 
+            background-color: transparent; 
+            /* height를 삭제하고 aspect-ratio를 써서 정사각형 유지 */
+            aspect-ratio: 1 / 1; 
+            cursor: pointer; position: relative; transform-style: preserve-3d; transition: transform 0.4s; 
+            /* 최대 크기 제한 */
+            max-width: 120px;
+            max-height: 120px;
+        }
         .card.flip { transform: rotateY(180deg); }
         .card.matched { visibility: hidden; opacity: 0; transition: opacity 0.3s; }
 
-        .face { width: 100%; height: 100%; position: absolute; backface-visibility: hidden; border-radius: 10px; display: flex; justify-content: center; align-items: center; box-shadow: 0 3px 5px rgba(0,0,0,0.15); font-weight: bold; padding: 5px; word-break: keep-all; overflow: hidden; }
-        .front { background: #2196f3; color: white; font-size: 32px; transform: rotateY(0deg); }
+        .face { width: 100%; height: 100%; position: absolute; backface-visibility: hidden; border-radius: 12px; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.15); font-weight: bold; padding: 8px; word-break: keep-all; overflow: hidden; }
+        .front { background: #2196f3; color: white; font-size: 40px; transform: rotateY(0deg); }
         
-        /* ★ 단어/뜻 색상 구분 */
+        /* ★ 글자 크기 키움 */
         .back { 
-            background: white; color: #333; /* 기본: 뜻(검은색) */
-            transform: rotateY(180deg); border: 3px solid #2196f3; 
-            font-size: 16px; display: flex; align-items: center; justify-content: center; text-align: center; line-height: 1.2;
+            background: white; color: #333; 
+            transform: rotateY(180deg); border: 4px solid #2196f3; 
+            font-size: 18px; /* 기본 폰트 키움 */
+            display: flex; align-items: center; justify-content: center; text-align: center; line-height: 1.3;
         }
-        .back.is-word { color: #1565c0; font-weight: 900; } /* 단어: 진한 파란색 */
+        .back.is-word { color: #1565c0; font-weight: 900; font-size: 24px; } /* 단어는 더 크게 */
 
         table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 16px; }
         th, td { padding: 8px; border-bottom: 1px solid #eee; text-align: center; }
         th { background: #f5f5f5; color: #555; }
         .rank-1 { color: gold; font-size: 1.3em; text-shadow: 1px 1px 0 #aaa; }
         
+        /* 반응형 */
         @media (max-width: 600px) {
-            .card { height: 80px; }
-            .lvl-btn, .diff-btn { width: 45%; margin: 5px 2px; height: 55px;} /* 모바일에서는 2열 배치 */
+            .game-board { gap: 5px; }
+            .lvl-btn, .diff-btn { width: 45%; margin: 5px 2px; height: 55px;}
             input[type="text"] { width: 80%; }
+            .front { font-size: 28px; }
+            .back { font-size: 14px; border-width: 2px;}
+            .back.is-word { font-size: 18px; }
         }
     </style>
 </head>
@@ -81,8 +99,8 @@
         <div class="select-group">
             <div class="group-title">🔥 난이도(개수) 선택</div>
             <div class="btn-container">
-                <button class="btn diff-btn" onclick="selectDifficulty(8, this)">🌱 쉬움<br>(8장)</button>
-                <button class="btn diff-btn active" onclick="selectDifficulty(16, this)">🐥 보통<br>(16장)</button>
+                <button class="btn diff-btn active" onclick="selectDifficulty(8, this)">🌱 쉬움<br>(8장)</button>
+                <button class="btn diff-btn" onclick="selectDifficulty(16, this)">🐥 보통<br>(16장)</button>
                 <button class="btn diff-btn" onclick="selectDifficulty(24, this)">🦅 어려움<br>(24장)</button>
                 <button class="btn diff-btn" onclick="selectDifficulty(40, this)">🔥 지옥<br>(40장)</button>
             </div>
@@ -113,15 +131,14 @@
 
     <script src="my_word_data.js"></script> 
     <script>
-        // 샘플 데이터 (비상용)
         if (typeof wordData === 'undefined') {
             var wordData = { "1-2": [], "3-4": [], "5-6": [], "중1": [] };
-            for(let i=0; i<20; i++) wordData["1-2"].push({word: "단어예시"+i, mean: "뜻이 아주 긴 예시입니다."+i});
+            for(let i=0; i<20; i++) wordData["1-2"].push({word: "테스트"+i, mean: "테스트뜻"+i});
             wordData["3-4"] = wordData["5-6"] = wordData["중1"] = wordData["1-2"];
         }
 
         let currentLevel = "1-2";
-        let currentCardCount = 16;
+        let currentCardCount = 8; // 기본값 8장으로 변경
         let userName = "";
         let startTime;
         let timerInterval;
@@ -169,7 +186,6 @@
 
             cardsArray = [];
             gameData.forEach(item => {
-                // ★ 타입에 따라 클래스 추가 (색상 구분용)
                 cardsArray.push({ text: item.word, type: 'word', pairId: item.word, cssClass: 'is-word' });
                 cardsArray.push({ text: item.mean, type: 'mean', pairId: item.word, cssClass: '' });
             });
@@ -189,16 +205,16 @@
                 el.classList.add('card');
                 el.dataset.pairId = card.pairId;
                 
-                let fontSize = '20px';
+                // ★ 글자 크기 더 키움
+                let fontSize = '20px'; // 기본값 증가
                 if(card.type === 'mean') {
-                    if(card.text.length > 30) fontSize = '11px';
-                    else if(card.text.length > 20) fontSize = '13px';
-                    else if(card.text.length > 10) fontSize = '15px';
+                    if(card.text.length > 30) fontSize = '13px';
+                    else if(card.text.length > 20) fontSize = '15px';
+                    else if(card.text.length > 10) fontSize = '17px';
                 } else {
-                    if(card.text.length > 5) fontSize = '18px';
+                    if(card.text.length > 5) fontSize = '22px';
                 }
 
-                // ★ 뒷면에 색상 클래스 적용
                 el.innerHTML = `
                     <div class="face front">?</div>
                     <div class="face back ${card.cssClass}" style="font-size:${fontSize}">${card.text}</div>
@@ -245,11 +261,12 @@
 
         function unflipCards() {
             lockBoard = true;
+            // ★ 뒤집기 속도 조절: 1500ms (1.5초)로 늘림
             setTimeout(() => {
                 firstCard.classList.remove('flip');
                 secondCard.classList.remove('flip');
                 resetBoard();
-            }, 800);
+            }, 1500); 
         }
 
         function resetBoard() {
