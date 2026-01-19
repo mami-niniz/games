@@ -27,7 +27,7 @@
             background: #fff8e1; 
             border-radius: 20px; 
             padding: 30px; 
-            max-width: 900px; /* 박스 너비 확대 */
+            max-width: 900px; 
             width: 95%;
             margin-top: 30px;
             margin-bottom: 30px;
@@ -45,7 +45,7 @@
         }
 
         .char-img {
-            width: 180px; /* 이미지 크기 확대 */
+            width: 180px; 
             height: 180px;
             object-fit: cover;
             border-radius: 50%;
@@ -57,7 +57,7 @@
         h1 { 
             font-family: 'Jua', sans-serif; 
             color: #5d4037; 
-            font-size: 48px; /* 제목 크기 확대 */
+            font-size: 48px; 
             margin: 0;
             line-height: 1.2;
             text-shadow: 2px 2px 0 #efebe9;
@@ -80,6 +80,7 @@
         .btn { padding: 12px 20px; margin: 8px; font-size: 20px; cursor: pointer; border: none; border-radius: 10px; font-family: 'Jua', sans-serif; transition: 0.1s; box-shadow: 0 4px 0 rgba(0,0,0,0.2); }
         .btn:active { transform: translateY(4px); box-shadow: none; }
         
+        /* 버튼 텍스트 색상: active 상태에서 흰색(#fff) 사용 중 */
         .lvl-btn { background: #d7ccc8; color: #5d4037; }
         .lvl-btn.active { background: #8d6e63; color: white; border: 2px solid #3e2723;}
         
@@ -98,7 +99,7 @@
 
         #game-screen {
             width: 100%;
-            max-width: 800px; /* 게임 화면 너비 확대 */
+            max-width: 800px; 
             display: none;
             flex-direction: column;
             align-items: center;
@@ -129,17 +130,16 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
             overflow: auto;
             max-width: 100%;
-            display: flex; justify-content: center; /* 그리드 중앙 정렬 */
+            display: flex; justify-content: center; 
         }
 
         table { border-collapse: collapse; background: #3e2723; margin: 0 auto; }
         
-        /* ★ PC용 큼직한 칸 설정 */
         td {
-            width: 60px; height: 60px; /* 40px -> 60px로 확대 */
-            border: 2px solid #5d4037; /* 테두리 두껍게 */
+            width: 60px; height: 60px; 
+            border: 2px solid #5d4037; 
             text-align: center;
-            font-size: 30px; /* 글자 크기 확대 */
+            font-size: 30px; 
             background: #3e2723; 
             color: transparent;
             cursor: default;
@@ -164,7 +164,7 @@
         .cell-num {
             position: absolute;
             top: 2px; left: 3px;
-            font-size: 14px; /* 번호도 크게 */
+            font-size: 14px; 
             color: #8d6e63;
             line-height: 1;
             font-weight: bold;
@@ -186,7 +186,7 @@
         .clue-label { font-size: 18px; color: #8d6e63; margin-bottom: 5px; }
         
         .clue-text {
-            font-size: 26px; /* 설명 글씨 확대 */
+            font-size: 26px; 
             margin-bottom: 15px;
             color: #5d4037;
             word-break: keep-all;
@@ -229,18 +229,37 @@
         .shake { animation: shake 0.4s; border-color: #e53935; }
         @keyframes shake { 0% { transform: translateX(0); } 25% { transform: translateX(-5px); } 50% { transform: translateX(5px); } 75% { transform: translateX(-5px); } 100% { transform: translateX(0); } }
 
-        .rank-table { width: 100%; margin-top: 20px; border-collapse: collapse; font-size: 20px; }
-        .rank-table th { background: #d7ccc8; padding: 12px; color: #3e2723; }
-        .rank-table td { border-bottom: 1px solid #efebe9; padding: 12px; color: #5d4037; }
-        .rank-1 { color: #e65100; font-weight: bold; }
+        /* ★ 명예의 전당 테이블 스타일 수정 (잘 보이게!) */
+        .rank-table { width: 100%; margin-top: 20px; border-collapse: separate; border-spacing: 0 5px; font-size: 20px; }
+        
+        .rank-table th { 
+            background: #5d4037; /* 헤더 진한 갈색 */
+            color: #fff8e1;      /* 헤더 글씨 밝은색 */
+            padding: 12px; 
+            border-radius: 10px 10px 0 0;
+        }
+        
+        .rank-table td { 
+            background: #8d6e63; /* 내용 배경: 진한 나무색 (버튼과 유사) */
+            color: white;        /* ★ 글씨: 하얀색 (잘 보이게!) */
+            padding: 12px; 
+            border-bottom: 1px solid #795548;
+        }
+        
+        /* 테이블 모서리 둥글게 처리 */
+        .rank-table tr:last-child td:first-child { border-bottom-left-radius: 10px; }
+        .rank-table tr:last-child td:last-child { border-bottom-right-radius: 10px; }
 
-        /* ★ 모바일 최적화 (모바일에서만 작게 조정) */
+        /* 1,2,3등 색상 변경 (어두운 배경에서도 잘 보이게) */
+        .rank-1 { color: #ffd54f !important; font-weight: bold; text-shadow: 1px 1px 0 #3e2723; } /* 금색 */
+        .rank-2 { color: #cfd8dc !important; font-weight: bold; } /* 은색 */
+        .rank-3 { color: #ffccbc !important; font-weight: bold; } /* 동색 */
+
         @media (max-width: 600px) {
             .intro-header { flex-direction: column; gap: 10px; }
             h1 { font-size: 32px; }
             .char-img { width: 120px; height: 120px; }
             
-            /* 모바일 전용 칸 크기 */
             td { width: 36px; height: 36px; font-size: 18px; border-width: 1px; } 
             .cell-num { font-size: 10px; top: 1px; left: 1px; }
             
@@ -286,7 +305,7 @@
 
         <div style="margin-top: 30px; border-top: 2px dashed #bcaaa4; padding-top:15px;">
             <h3>🏆 명예의 전당 (완료 시간)</h3>
-            <table class="rank-table" id="ranking-table"><tr><td>로딩중...</td></tr></table>
+            <table class="rank-table" id="ranking-table"><tr><td colspan="4" style="color:white;">로딩중...</td></tr></table>
         </div>
     </div>
 
@@ -665,12 +684,12 @@
             
             let html = `<tr><th>순위</th><th>이름</th><th>모드</th><th>시간</th></tr>`;
             if (records.length === 0) {
-                html += `<tr><td colspan="4" style="padding:20px;">아직 기록이 없구만.. 자네가 1등 해보게.</td></tr>`;
+                html += `<tr><td colspan="4" style="padding:20px; color:white;">아직 기록이 없구만.. 자네가 1등 해보게.</td></tr>`;
             } else {
                 records.slice(0, 5).forEach((r, index) => {
                     let badge = index === 0 ? '🥇' : (index === 1 ? '🥈' : (index === 2 ? '🥉' : index + 1));
                     let rankClass = index < 3 ? `rank-${index+1}` : '';
-                    html += `<tr class="${rankClass}"><td>${badge}</td><td>${r.name}</td><td><small>${r.mode}</small></td><td>${r.time}초</td></tr>`;
+                    html += `<tr><td class="${rankClass}">${badge}</td><td>${r.name}</td><td><small>${r.mode}</small></td><td>${r.time}초</td></tr>`;
                 });
             }
             table.innerHTML = html;
