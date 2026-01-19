@@ -45,7 +45,7 @@
         }
 
         .char-img {
-            width: 180px; 
+            width: 180px;
             height: 180px;
             object-fit: cover;
             border-radius: 50%;
@@ -80,7 +80,6 @@
         .btn { padding: 12px 20px; margin: 8px; font-size: 20px; cursor: pointer; border: none; border-radius: 10px; font-family: 'Jua', sans-serif; transition: 0.1s; box-shadow: 0 4px 0 rgba(0,0,0,0.2); }
         .btn:active { transform: translateY(4px); box-shadow: none; }
         
-        /* 버튼 텍스트 색상: active 상태에서 흰색(#fff) 사용 중 */
         .lvl-btn { background: #d7ccc8; color: #5d4037; }
         .lvl-btn.active { background: #8d6e63; color: white; border: 2px solid #3e2723;}
         
@@ -229,40 +228,21 @@
         .shake { animation: shake 0.4s; border-color: #e53935; }
         @keyframes shake { 0% { transform: translateX(0); } 25% { transform: translateX(-5px); } 50% { transform: translateX(5px); } 75% { transform: translateX(-5px); } 100% { transform: translateX(0); } }
 
-        /* ★ 명예의 전당 테이블 스타일 수정 (잘 보이게!) */
         .rank-table { width: 100%; margin-top: 20px; border-collapse: separate; border-spacing: 0 5px; font-size: 20px; }
-        
-        .rank-table th { 
-            background: #5d4037; /* 헤더 진한 갈색 */
-            color: #fff8e1;      /* 헤더 글씨 밝은색 */
-            padding: 12px; 
-            border-radius: 10px 10px 0 0;
-        }
-        
-        .rank-table td { 
-            background: #8d6e63; /* 내용 배경: 진한 나무색 (버튼과 유사) */
-            color: white;        /* ★ 글씨: 하얀색 (잘 보이게!) */
-            padding: 12px; 
-            border-bottom: 1px solid #795548;
-        }
-        
-        /* 테이블 모서리 둥글게 처리 */
+        .rank-table th { background: #5d4037; color: #fff8e1; padding: 12px; border-radius: 10px 10px 0 0; }
+        .rank-table td { background: #8d6e63; color: white; padding: 12px; border-bottom: 1px solid #795548; }
         .rank-table tr:last-child td:first-child { border-bottom-left-radius: 10px; }
         .rank-table tr:last-child td:last-child { border-bottom-right-radius: 10px; }
-
-        /* 1,2,3등 색상 변경 (어두운 배경에서도 잘 보이게) */
-        .rank-1 { color: #ffd54f !important; font-weight: bold; text-shadow: 1px 1px 0 #3e2723; } /* 금색 */
-        .rank-2 { color: #cfd8dc !important; font-weight: bold; } /* 은색 */
-        .rank-3 { color: #ffccbc !important; font-weight: bold; } /* 동색 */
+        .rank-1 { color: #ffd54f !important; font-weight: bold; text-shadow: 1px 1px 0 #3e2723; }
+        .rank-2 { color: #cfd8dc !important; font-weight: bold; }
+        .rank-3 { color: #ffccbc !important; font-weight: bold; }
 
         @media (max-width: 600px) {
             .intro-header { flex-direction: column; gap: 10px; }
             h1 { font-size: 32px; }
             .char-img { width: 120px; height: 120px; }
-            
             td { width: 36px; height: 36px; font-size: 18px; border-width: 1px; } 
             .cell-num { font-size: 10px; top: 1px; left: 1px; }
-            
             .game-box { padding: 20px; }
             .input-area { padding: 15px; }
             .clue-text { font-size: 18px; min-height: 40px; }
@@ -318,7 +298,7 @@
         <div class="crossword-container">
             <table id="crossword-grid"></table>
         </div>
-        <div style="color:#795548; font-size:16px; margin-top:15px;">* 노란색 칸을 누르고 정답을 입력하세요.</div>
+        <div style="color:#795548; font-size:16px; margin-top:15px;">* 단어의 첫 글자(번호 칸)를 눌러야 입력할 수 있어요.</div>
 
         <div class="input-area">
             <div class="clue-label" id="clue-label">설명</div>
@@ -506,14 +486,20 @@
                         td.className = 'letter-cell';
                         td.dataset.row = r;
                         td.dataset.col = c;
-                        td.onclick = () => onCellClick(r, c);
                         
+                        // 번호가 있는 칸인지 확인
                         let wordStarts = placedWords.filter(w => w.row === r && w.col === c);
+                        
                         if(wordStarts.length > 0) {
+                            // ★ 시작 칸(번호 있음)은 클릭 가능
                             let numSpan = document.createElement('span');
                             numSpan.className = 'cell-num';
                             numSpan.innerText = wordStarts.map(w=>w.number).join(',');
                             td.appendChild(numSpan);
+                            td.onclick = () => onCellClick(r, c); // 클릭 이벤트 연결
+                        } else {
+                            // ★ 번호 없는 중간 칸은 클릭 불가 (커서 변경)
+                            td.style.cursor = 'default';
                         }
                         
                         let solvedSpan = document.createElement('span');
@@ -528,14 +514,13 @@
         }
 
         function onCellClick(r, c) {
-            let candidates = placedWords.filter(w => {
-                if (w.direction === 'across') return w.row === r && c >= w.col && c < w.col + w.word.length;
-                else return w.col === c && r >= w.row && r < w.row + w.word.length;
-            });
+            // ★ 클릭한 칸이 '시작점'인 단어만 후보로 선정
+            let candidates = placedWords.filter(w => w.row === r && w.col === c);
 
-            if (candidates.length === 0) return;
+            if (candidates.length === 0) return; // 시작점이 아니면 무시
 
             let selected = candidates[0];
+            // 두 단어의 시작점일 경우(가로/세로 교차), 토글
             if (activeWordInfo && candidates.length > 1) {
                 if (activeWordInfo.word === candidates[0].word) selected = candidates[1];
             }
@@ -586,6 +571,8 @@
                 document.getElementById('input-group').style.visibility = 'hidden';
                 document.getElementById('clue-display').innerText = "참 잘했구만! 다음 칸을 눌러보게.";
                 activeWordInfo = null;
+                
+                checkAllWordsSolved(); // ★ 정답 맞춘 후 자동 완성 체크
                 checkGameClear();
             } else {
                 input.classList.add('shake');
@@ -615,24 +602,9 @@
                 let td = document.querySelector(`td[data-row="${target.r}"][data-col="${target.c}"]`);
                 if(td) td.classList.add('solved');
                 
-                let allRevealed = true;
-                for(let i=0; i<wordObj.word.length; i++) {
-                    let r = wordObj.row + (wordObj.direction === 'down' ? i : 0);
-                    let c = wordObj.col + (wordObj.direction === 'across' ? i : 0);
-                    let cell = document.querySelector(`td[data-row="${r}"][data-col="${c}"]`);
-                    if(!cell || !cell.classList.contains('solved')) {
-                        allRevealed = false;
-                        break;
-                    }
-                }
-
-                if(allRevealed) {
-                    wordObj.solved = true;
-                    document.getElementById('input-group').style.visibility = 'hidden';
-                    document.getElementById('clue-display').innerText = "허허, 힌트로 다 풀었구만! 정답일세.";
-                    activeWordInfo = null;
-                    checkGameClear(); 
-                }
+                // 힌트 후에도 자동 완성 체크
+                checkAllWordsSolved();
+                checkGameClear();
             }
         }
 
@@ -645,9 +617,33 @@
             }
         }
 
+        // ★ [핵심] 가로세로 교차로 인해 자동으로 다 채워진 단어 찾기
+        function checkAllWordsSolved() {
+            placedWords.forEach(w => {
+                if(w.solved) return; // 이미 푼 건 패스
+
+                let allCellsRevealed = true;
+                for(let i=0; i<w.word.length; i++) {
+                    let r = w.row + (w.direction === 'down' ? i : 0);
+                    let c = w.col + (w.direction === 'across' ? i : 0);
+                    let td = document.querySelector(`td[data-row="${r}"][data-col="${c}"]`);
+                    // 하나라도 안 밝혀졌으면 실패
+                    if(!td || !td.classList.contains('solved')) {
+                        allCellsRevealed = false;
+                        break;
+                    }
+                }
+
+                if(allCellsRevealed) {
+                    w.solved = true; // 자동으로 정답 처리
+                }
+            });
+        }
+
         function checkGameClear() {
             if (placedWords.every(w => w.solved)) {
-                endGame();
+                // ★ 2초 뒤에 게임 종료 (여운 남기기)
+                setTimeout(endGame, 2000);
             }
         }
 
@@ -689,7 +685,7 @@
                 records.slice(0, 5).forEach((r, index) => {
                     let badge = index === 0 ? '🥇' : (index === 1 ? '🥈' : (index === 2 ? '🥉' : index + 1));
                     let rankClass = index < 3 ? `rank-${index+1}` : '';
-                    html += `<tr><td class="${rankClass}">${badge}</td><td>${r.name}</td><td><small>${r.mode}</small></td><td>${r.time}초</td></tr>`;
+                    html += `<tr class="${rankClass}"><td>${badge}</td><td>${r.name}</td><td><small>${r.mode}</small></td><td>${r.time}초</td></tr>`;
                 });
             }
             table.innerHTML = html;
