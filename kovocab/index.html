@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Jua', sans-serif; background: #e3f2fd; text-align: center; margin: 0; padding: 20px; }
-        .game-box { background: white; border-radius: 20px; padding: 30px; max-width: 900px; margin: 0 auto; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .game-box { background: white; border-radius: 20px; padding: 30px; max-width: 1200px; margin: 0 auto; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
         .hidden { display: none !important; }
         h1 { color: #1565c0; margin-bottom: 20px; word-break: keep-all;}
         
@@ -33,48 +33,53 @@
 
         .game-header { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 20px; color: #1565c0; font-weight: bold; }
         
-        /* ★ 게임 보드 & 카드 정사각형 스타일 수정 */
+        /* ★ 게임 보드 수정: 간격 넓힘 */
         .game-board { 
-            display: grid; gap: 10px; margin: 0 auto; 
+            display: grid; 
+            gap: 15px; /* 카드 사이 간격 넓힘 */
+            margin: 0 auto; 
             perspective: 1000px; 
-            justify-content: center; /* 가운데 정렬 */
+            justify-content: center;
+            padding: 10px;
         }
 
+        /* ★ 카드 크기 제약 해제 및 정사각형 유지 */
         .card { 
             background-color: transparent; 
-            /* height를 삭제하고 aspect-ratio를 써서 정사각형 유지 */
-            aspect-ratio: 1 / 1; 
+            width: 100%; /* 그리드 칸을 꽉 채움 */
+            aspect-ratio: 1 / 1; /* 정사각형 유지 */
             cursor: pointer; position: relative; transform-style: preserve-3d; transition: transform 0.4s; 
-            /* 최대 크기 제한 */
-            max-width: 120px;
-            max-height: 120px;
+            min-width: 80px; /* 너무 작아지지 않게 최소 폭 설정 */
         }
         .card.flip { transform: rotateY(180deg); }
         .card.matched { visibility: hidden; opacity: 0; transition: opacity 0.3s; }
 
-        .face { width: 100%; height: 100%; position: absolute; backface-visibility: hidden; border-radius: 12px; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.15); font-weight: bold; padding: 8px; word-break: keep-all; overflow: hidden; }
+        .face { width: 100%; height: 100%; position: absolute; backface-visibility: hidden; border-radius: 15px; display: flex; justify-content: center; align-items: center; box-shadow: 0 5px 10px rgba(0,0,0,0.15); font-weight: bold; padding: 10px; word-break: keep-all; overflow: hidden; }
         .front { background: #2196f3; color: white; font-size: 40px; transform: rotateY(0deg); }
         
-        /* ★ 글자 크기 키움 */
+        /* ★ 글자가 길면 스크롤 되거나 줄바꿈 */
         .back { 
             background: white; color: #333; 
             transform: rotateY(180deg); border: 4px solid #2196f3; 
-            font-size: 18px; /* 기본 폰트 키움 */
+            font-size: 18px; 
             display: flex; align-items: center; justify-content: center; text-align: center; line-height: 1.3;
+            overflow-y: auto; /* 내용 넘치면 스크롤 */
         }
-        .back.is-word { color: #1565c0; font-weight: 900; font-size: 24px; } /* 단어는 더 크게 */
+        /* 스크롤바 숨기기 (미관상) */
+        .back::-webkit-scrollbar { display: none; }
+
+        .back.is-word { color: #1565c0; font-weight: 900; font-size: 26px; } /* 단어는 더 크게 */
 
         table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 16px; }
         th, td { padding: 8px; border-bottom: 1px solid #eee; text-align: center; }
         th { background: #f5f5f5; color: #555; }
         .rank-1 { color: gold; font-size: 1.3em; text-shadow: 1px 1px 0 #aaa; }
         
-        /* 반응형 */
         @media (max-width: 600px) {
-            .game-board { gap: 5px; }
+            .game-board { gap: 8px; }
             .lvl-btn, .diff-btn { width: 45%; margin: 5px 2px; height: 55px;}
             input[type="text"] { width: 80%; }
-            .front { font-size: 28px; }
+            .front { font-size: 24px; }
             .back { font-size: 14px; border-width: 2px;}
             .back.is-word { font-size: 18px; }
         }
@@ -138,7 +143,7 @@
         }
 
         let currentLevel = "1-2";
-        let currentCardCount = 8; // 기본값 8장으로 변경
+        let currentCardCount = 8;
         let userName = "";
         let startTime;
         let timerInterval;
@@ -194,10 +199,19 @@
             const board = document.getElementById('board');
             board.innerHTML = '';
 
+            // ★ 중요: 카드를 더 크게 보이게 하기 위해 컬럼(열) 수를 줄임
             let columns = 4;
-            if (currentCardCount === 24) columns = 6;
-            else if (currentCardCount === 40) columns = 8;
-            if (window.innerWidth < 600 && columns > 4) columns = 4; 
+            if (currentCardCount === 8) columns = 4;      // 2줄
+            else if (currentCardCount === 16) columns = 4; // 4줄
+            else if (currentCardCount === 24) columns = 5; // 5줄 (기존 6에서 5로 줄여서 카드 키움)
+            else if (currentCardCount === 40) columns = 6; // 7줄 (기존 8에서 6으로 줄여서 카드 대폭 키움)
+            
+            // 모바일 화면에서는 더 적게
+            if (window.innerWidth < 600) {
+                if (currentCardCount >= 24) columns = 4;
+                else columns = 3; 
+            }
+
             board.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
 
             cardsArray.forEach(card => {
@@ -205,14 +219,16 @@
                 el.classList.add('card');
                 el.dataset.pairId = card.pairId;
                 
-                // ★ 글자 크기 더 키움
-                let fontSize = '20px'; // 기본값 증가
+                // 폰트 크기 계산 (더 크게)
+                let fontSize = '20px';
                 if(card.type === 'mean') {
-                    if(card.text.length > 30) fontSize = '13px';
-                    else if(card.text.length > 20) fontSize = '15px';
-                    else if(card.text.length > 10) fontSize = '17px';
+                    if(card.text.length > 30) fontSize = '14px';
+                    else if(card.text.length > 20) fontSize = '16px';
+                    else if(card.text.length > 10) fontSize = '19px';
+                    else fontSize = '22px';
                 } else {
                     if(card.text.length > 5) fontSize = '22px';
+                    else fontSize = '28px'; // 단어는 아주 크게
                 }
 
                 el.innerHTML = `
@@ -261,7 +277,7 @@
 
         function unflipCards() {
             lockBoard = true;
-            // ★ 뒤집기 속도 조절: 1500ms (1.5초)로 늘림
+            // 속도 1.5초 유지
             setTimeout(() => {
                 firstCard.classList.remove('flip');
                 secondCard.classList.remove('flip');
