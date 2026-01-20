@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"> 
+    <title>호랑이 선생님의 O/X 퀴즈</title>
+    <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; }
+
+        body { 
+            font-family: 'Jua', sans-serif; 
+            background-color: #ffcc80; /* 호랑이 배경색 */
+            background-image: radial-gradient(#ff9800 15%, transparent 16%), radial-gradient(#ff9800 15%, transparent 16%);
+            background-size: 60px 60px;
+            background-position: 0 0, 30px 30px;
+            color: #3e2723;
+            text-align: center; 
+            margin: 0; 
+            padding: 0; 
+            min-height: 100dvh; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .game-box { 
+            background: #fff3e0; 
+            border-radius: 25px; 
+            padding: 30px; 
+            max-width: 800px; 
+            width: 95%;
+            margin-top: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 0 #5d4037; 
+            border: 5px solid #ff6f00;
+        }
+        .hidden { display: none !important; }
+
+        /* 인트로 */
+        .intro-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .char-img {
+            width: 160px;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 6px solid #ff6f00;
+            background: #fff;
+            box-shadow: 0 0 20px rgba(255, 111, 0, 0.4);
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        h1 { 
+            font-size: 48px; 
+            color: #e65100; 
+            margin: 0;
+            text-shadow: 2px 2px 0 #fff;
+            line-height: 1.2;
+        }
+        
+        .desc-text { font-size: 22px; color: #795548; margin-top: 5px; }
+
+        /* 입력창 및 버튼 */
+        input[type="text"] { 
+            padding: 12px; 
+            font-size: 22px; 
+            border-radius: 15px; 
+            border: 3px solid #ff6f00; 
+            width: 70%; 
+            font-family: 'Jua', sans-serif; 
+            text-align: center; 
+            margin-bottom: 20px; 
+            background: #fff; 
+        }
+        
+        .btn { padding: 10px 15px; margin: 5px; font-size: 20px; cursor: pointer; border: none; border-radius: 12px; font-family: 'Jua', sans-serif; transition: 0.1s; box-shadow: 0 4px 0 rgba(0,0,0,0.2); }
+        .btn:active { transform: translateY(4px); box-shadow: none; }
+        
+        .lvl-btn { background: #ffe0b2; color: #e65100; }
+        .lvl-btn.active { background: #ff6f00; color: white; border: 2px solid #bf360c;}
+        
+        .start-btn { 
+            background: #d84315; 
+            color: white; 
+            font-size: 32px; 
+            padding: 15px 50px; 
+            margin-top: 20px; 
+            width: 80%; 
+            border-radius: 50px;
+            border-bottom: 6px solid #bf360c;
+        }
+
+        /* ★ 게임 화면 */
+        #game-screen {
+            width: 100%;
+            max-width: 600px;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            padding-bottom: 50px;
+        }
+
+        .top-bar {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            font-size: 24px;
+            color: #3e2723;
+            font-weight: bold;
+        }
+
+        /* 타이머 바 */
+        .timer-container {
+            width: 100%;
+            height: 20px;
+            background: #eee;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            border: 2px solid #3e2723;
+        }
+        .timer-bar {
+            width: 100%;
+            height: 100%;
+            background: #d84315;
+            transition: width 0.1s linear;
+        }
+
+        .quiz-card {
+            background: #fff;
+            border-radius: 20px;
+            padding: 40px 20px;
+            width: 95%;
+            min-height: 250px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 0 rgba(0,0,0,0.1);
+            border: 4px solid #8d6e63;
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .tiger-avatar {
+            position: absolute;
+            top: -60px;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 5px solid #ff6f00;
+            background: #fff;
+            object-fit: cover;
+        }
+
+        .word-text {
+            font-size: 48px;
+            color: #d84315;
+            margin-bottom: 10px;
+            margin-top: 30px;
+        }
+
+        .mean-text {
+            font-size: 28px;
+            color: #333;
+            word-break: keep-all;
+            line-height: 1.4;
+        }
+
+        /* OX 버튼 */
+        .ox-btn-container {
+            display: flex;
+            gap: 20px;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .ox-btn {
+            width: 45%;
+            aspect-ratio: 1; /* 정사각형 유지 */
+            max-width: 150px;
+            border-radius: 20px;
+            font-size: 80px;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 8px 0 rgba(0,0,0,0.2);
+            transition: transform 0.1s;
+            font-family: 'Jua', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .ox-btn:active { transform: translateY(6px); box-shadow: none; }
+
+        .btn-o { background: #42a5f5; color: white; border-bottom: 8px solid #1565c0; text-shadow: 2px 2px 0 #0d47a1; }
+        .btn-x { background: #ef5350; color: white; border-bottom: 8px solid #c62828; text-shadow: 2px 2px 0 #b71c1c; }
+
+        /* 결과 표시 (정답/오답) */
+        .feedback-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            display: flex;
+            align-items: center; justify-content: center;
+            font-size: 150px;
+            font-weight: bold;
+            z-index: 50;
+            background: rgba(255,255,255,0.8);
+            border-radius: 20px;
+            display: none; /* JS로 제어 */
+        }
+
+        .rank-table { width: 100%; margin-top: 20px; border-collapse: separate; border-spacing: 0 5px; font-size: 18px; }
+        .rank-table th { background: #5d4037; color: #fff; padding: 10px; border-radius: 10px 10px 0 0; }
+        .rank-table td { background: #8d6e63; color: white; padding: 10px; border-bottom: 1px solid #5d4037; }
+        .rank-table tr:last-child td:first-child { border-bottom-left-radius: 10px; }
+        .rank-table tr:last-child td:last-child { border-bottom-right-radius: 10px; }
+        .rank-1 { color: #ffd54f !important; font-size: 1.2em; text-shadow: 1px 1px 0 #3e2723;}
+
+        @media (max-width: 600px) {
+            h1 { font-size: 36px; }
+            .char-img { width: 130px; height: 130px; }
+            .tiger-avatar { width: 100px; height: 100px; top: -50px; }
+            .word-text { font-size: 36px; }
+            .mean-text { font-size: 22px; }
+            .ox-btn { font-size: 60px; max-width: 120px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="intro-screen" class="game-box">
+        <div class="intro-header">
+            <img src="tiger.png" alt="호랑이 선생님" class="char-img" onerror="this.src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Animals/Tiger%20Face.png'">
+            <div>
+                <h1>호랑이 선생님의<br>O/X 퀴즈</h1>
+                <p class="desc-text">맞으면 O, 틀리면 X!</p>
+            </div>
+        </div>
+
+        <input type="text" id="username" placeholder="이름을 입력하세요" maxlength="8">
+
+        <div style="margin: 20px 0;">
+            <p style="margin-bottom:5px;">📚 학년 선택</p>
+            <button class="btn lvl-btn active" onclick="selectLevel('1-2', this)">1-2학년</button>
+            <button class="btn lvl-btn" onclick="selectLevel('3-4', this)">3-4학년</button>
+            <button class="btn lvl-btn" onclick="selectLevel('5-6', this)">5-6학년</button>
+            <button class="btn lvl-btn" onclick="selectLevel('중1', this)">중1</button>
+        </div>
+
+        <button class="btn start-btn" onclick="startGame()">퀴즈 시작 ▶</button>
+
+        <div style="margin-top: 30px;">
+            <h3>🏆 명예의 전당 (점수)</h3>
+            <table class="rank-table" id="ranking-table"><tr><td colspan="4">로딩중...</td></tr></table>
+        </div>
+    </div>
+
+    <div id="game-screen">
+        <div class="top-bar">
+            <span>🐯 <span id="progress-display">1 / 10</span></span>
+            <span>💯 <span id="score-display">0</span>점</span>
+        </div>
+
+        <div class="timer-container">
+            <div id="timer-bar" class="timer-bar"></div>
+        </div>
+
+        <div class="quiz-card">
+            <img src="tiger.png" class="tiger-avatar" onerror="this.src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Animals/Tiger%20Face.png'">
+            
+            <div class="word-text" id="quiz-word">단어</div>
+            <div style="color:#795548; font-size:20px; margin-bottom:10px;">(은)는</div>
+            <div class="mean-text" id="quiz-mean">뜻 설명이 여기에 나옵니다.</div>
+
+            <div id="feedback" class="feedback-overlay"></div>
+        </div>
+
+        <div class="ox-btn-container">
+            <button class="ox-btn btn-o" onclick="checkAnswer(true)">O</button>
+            <button class="ox-btn btn-x" onclick="checkAnswer(false)">X</button>
+        </div>
+        
+        <div style="margin-top:20px;">
+            <button class="btn" style="background:#8d6e63; color:white; font-size:16px;" onclick="goHome()">🏠 그만하기</button>
+        </div>
+    </div>
+
+    <div id="result-screen" class="game-box hidden">
+        <img src="tiger.png" class="char-img" onerror="this.src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Animals/Tiger%20Face.png'">
+        <h1 style="color:#e65100; margin-top:20px;">퀴즈 종료!</h1>
+        <h2 id="final-score" style="color: #3e2723; font-size: 40px; margin: 15px 0;">0점</h2>
+        <p id="final-msg" style="font-size: 22px; color:#555;">호랑이 선생님이 채점 중입니다...</p>
+        <button class="btn start-btn" onclick="location.reload()">🔄 다시 도전하기</button>
+    </div>
+
+    <script src="../kovocab/my_word_data.js"></script> 
+
+    <script>
+        if (typeof wordData === 'undefined') {
+            alert("데이터 파일을 찾을 수 없습니다! (../kovocab/my_word_data.js 확인)");
+            var wordData = { "1-2": [{word:"사과",mean:"과일"},{word:"바나나",mean:"노란 과일"}] };
+        }
+
+        let currentLevel = "1-2";
+        let maxQuestions = 10; // 문제 수
+        let timePerQuestion = 10; // 문제당 시간(초)
+        
+        let userName = "";
+        let quizList = [];
+        let currentIndex = 0;
+        let score = 0;
+        let combo = 0;
+        
+        let timerInterval;
+        let timeLeft;
+        let isAnswering = false; // 중복 클릭 방지
+
+        window.onload = loadRanking;
+
+        function selectLevel(lvl, btn) {
+            currentLevel = lvl;
+            document.querySelectorAll('.lvl-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
+        function startGame() {
+            const inputName = document.getElementById('username').value.trim();
+            if (!inputName) { alert("이름을 입력해주세요!"); return; }
+            userName = inputName;
+
+            const pool = wordData[currentLevel];
+            if (!pool || pool.length < 5) {
+                alert(`단어가 부족합니다. (최소 5개 필요)`); return;
+            }
+
+            // 문제 생성 (O/X 섞어서)
+            generateQuizList(pool);
+            
+            document.getElementById('intro-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('game-screen').style.display = 'flex';
+
+            currentIndex = 0;
+            score = 0;
+            combo = 0;
+            showQuestion();
+        }
+
+        function generateQuizList(pool) {
+            quizList = [];
+            let usedIndices = new Set();
+            
+            // 데이터 풀에서 랜덤하게 선택
+            let safePool = [...pool]; 
+            
+            for(let i=0; i<maxQuestions; i++) {
+                if(safePool.length === 0) safePool = [...pool]; // 모자르면 리필
+                
+                const randIdx = Math.floor(Math.random() * safePool.length);
+                const target = safePool[randIdx];
+                
+                // 50% 확률로 정답(O), 50% 확률로 오답(X) 생성
+                const isCorrect = Math.random() < 0.5;
+                let questionMean = target.mean;
+                
+                if (!isCorrect) {
+                    // 오답일 경우 다른 단어의 뜻을 가져옴
+                    let wrongIdx;
+                    do {
+                        wrongIdx = Math.floor(Math.random() * pool.length);
+                    } while (pool[wrongIdx].word === target.word && pool.length > 1);
+                    questionMean = pool[wrongIdx].mean;
+                }
+
+                quizList.push({
+                    word: target.word,
+                    mean: questionMean,
+                    answer: isCorrect // true(O) or false(X)
+                });
+            }
+        }
+
+        function showQuestion() {
+            if (currentIndex >= maxQuestions) {
+                endGame();
+                return;
+            }
+
+            // 화면 갱신
+            document.getElementById('progress-display').innerText = `${currentIndex + 1} / ${maxQuestions}`;
+            document.getElementById('score-display').innerText = score;
+            document.getElementById('feedback').style.display = 'none'; // 피드백 숨김
+            
+            const q = quizList[currentIndex];
+            document.getElementById('quiz-word').innerText = q.word;
+            document.getElementById('quiz-mean').innerText = q.mean;
+
+            // 타이머 시작
+            startTimer();
+            isAnswering = false;
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timeLeft = timePerQuestion;
+            updateTimerBar();
+            
+            timerInterval = setInterval(() => {
+                timeLeft -= 0.1;
+                updateTimerBar();
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    handleTimeOut();
+                }
+            }, 100);
+        }
+
+        function updateTimerBar() {
+            const bar = document.getElementById('timer-bar');
+            const percent = (timeLeft / timePerQuestion) * 100;
+            bar.style.width = `${percent}%`;
+            
+            // 색상 변경 (시간 얼마 안 남았을 때)
+            if(percent < 30) bar.style.background = '#d32f2f'; // 빨강
+            else bar.style.background = '#d84315'; // 주황
+        }
+
+        function checkAnswer(userChoice) {
+            if (isAnswering) return;
+            isAnswering = true;
+            clearInterval(timerInterval);
+
+            const q = quizList[currentIndex];
+            const isCorrect = (userChoice === q.answer);
+            
+            const feedback = document.getElementById('feedback');
+            feedback.style.display = 'flex';
+
+            if (isCorrect) {
+                // 정답
+                feedback.innerText = "⭕";
+                feedback.style.color = "#2e7d32";
+                score += 10 + combo; // 콤보 보너스
+                combo++;
+                // 1초 뒤 다음 문제
+                setTimeout(() => {
+                    currentIndex++;
+                    showQuestion();
+                }, 800);
+            } else {
+                // 오답
+                feedback.innerText = "❌";
+                feedback.style.color = "#c62828";
+                combo = 0; // 콤보 초기화
+                // 1.5초 뒤 다음 문제 (오답 확인 시간 좀 더 줌)
+                setTimeout(() => {
+                    currentIndex++;
+                    showQuestion();
+                }, 1200);
+            }
+        }
+
+        function handleTimeOut() {
+            if (isAnswering) return;
+            isAnswering = true;
+            
+            const feedback = document.getElementById('feedback');
+            feedback.style.display = 'flex';
+            feedback.innerText = "⏰"; // 시간 초과 아이콘
+            feedback.style.color = "#555";
+            
+            combo = 0;
+            
+            setTimeout(() => {
+                currentIndex++;
+                showQuestion();
+            }, 1200);
+        }
+
+        function endGame() {
+            document.getElementById('game-screen').style.display = 'none';
+            document.getElementById('result-screen').classList.remove('hidden');
+            
+            document.getElementById('final-score').innerText = `${score}점`;
+            
+            let msg = "";
+            if(score >= 90) msg = "어흥! 호랑이 선생님이 극찬합니다! 🐯👍";
+            else if(score >= 70) msg = "훌륭하군! 아주 잘했어! 🐯✨";
+            else if(score >= 40) msg = "수고했어! 조금 더 노력해보자. 🐯📚";
+            else msg = "정신 바짝 차리게! 다시 해보자! 🐯🔥";
+            
+            document.getElementById('final-msg').innerText = msg;
+
+            saveScore(userName, score, `${currentLevel}`);
+        }
+
+        function saveScore(name, score, mode) {
+            let records = JSON.parse(localStorage.getItem('tigerGameRank')) || [];
+            records.push({ name, score, mode, date: new Date().toLocaleDateString() });
+            
+            records.sort((a, b) => b.score - a.score); // 점수 높은 순
+            
+            localStorage.setItem('tigerGameRank', JSON.stringify(records));
+        }
+
+        function loadRanking() {
+            const table = document.getElementById('ranking-table');
+            if(!table) return;
+            let records = JSON.parse(localStorage.getItem('tigerGameRank')) || [];
+            
+            let html = `<tr><th>순위</th><th>이름</th><th>모드</th><th>점수</th></tr>`;
+            if (records.length === 0) {
+                html += `<tr><td colspan="4" style="padding:20px; color:white;">아직 도전자가 없습니다.</td></tr>`;
+            } else {
+                records.slice(0, 5).forEach((r, index) => {
+                    let badge = index === 0 ? '🥇' : (index === 1 ? '🥈' : (index === 2 ? '🥉' : index + 1));
+                    let rankClass = index < 3 ? `rank-${index+1}` : '';
+                    html += `<tr class="${rankClass}">
+                        <td>${badge}</td>
+                        <td>${r.name}</td>
+                        <td><small>${r.mode}</small></td>
+                        <td style="font-weight:bold;">${r.score}점</td>
+                    </tr>`;
+                });
+            }
+            table.innerHTML = html;
+        }
+
+        function goHome() {
+            if(confirm("그만하고 나가시겠습니까?")) location.reload();
+        }
+    </script>
+</body>
+</html>
