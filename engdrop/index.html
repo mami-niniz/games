@@ -9,7 +9,6 @@
         * { box-sizing: border-box; touch-action: none; user-select: none; -webkit-user-select: none; }
 
         body { 
-            /* 기본 폰트를 고딕(Noto Sans)으로 변경하여 가독성 확보 */
             font-family: 'Noto Sans KR', sans-serif; 
             background-color: #81d4fa; 
             margin: 0; 
@@ -41,10 +40,10 @@
             justify-content: space-between;
             font-size: 24px;
             color: #3e2723;
-            font-weight: 900; /* 굵게 */
+            font-weight: 900; 
             z-index: 100;
             text-shadow: 2px 2px 0 #fff;
-            font-family: 'Jua', sans-serif; /* 점수는 귀여운 폰트 유지 */
+            font-family: 'Jua', sans-serif; 
         }
 
         .home-btn-small {
@@ -73,9 +72,8 @@
             min-width: 260px;
         }
         .target-word {
-            /* ★ 핵심 단어: 고딕체로 명확하게 */
             font-family: 'Noto Sans KR', sans-serif;
-            font-weight: 900; /* 아주 굵게 */
+            font-weight: 900; 
             font-size: 38px;
             color: #d84315;
             margin: 5px 0 0 0;
@@ -105,7 +103,7 @@
         /* 떨어지는 고기 */
         .food {
             position: absolute;
-            width: 90px; /* 글자 잘 보이게 너비 확대 */
+            width: 100px;
             height: 70px;
             display: flex;
             flex-direction: column;
@@ -121,17 +119,15 @@
         }
         .food span {
             z-index: 1;
-            background: rgba(0,0,0,0.7); /* 배경을 더 진하게 해서 글자 부각 */
+            background: rgba(0,0,0,0.7); 
             color: #fff;
-            padding: 4px 8px;
+            padding: 4px 10px;
             border-radius: 6px;
             white-space: nowrap;
-            
-            /* ★ 고기 위 글자: 고딕체로 선명하게 */
             font-family: 'Noto Sans KR', sans-serif; 
             font-size: 20px; 
             font-weight: 700;
-            text-shadow: 1px 1px 2px #000; /* 검은 테두리 효과 */
+            text-shadow: 1px 1px 2px #000; 
         }
 
         /* 컨트롤 영역 */
@@ -158,7 +154,6 @@
         }
         .hidden { display: none !important; }
 
-        /* 제목은 귀여운 폰트 유지 */
         h1 { font-family: 'Jua', sans-serif; }
 
         .btn {
@@ -177,7 +172,7 @@
         input[type="text"] {
             padding: 10px; font-size: 22px; border: 3px solid #ffca28;
             border-radius: 10px; text-align: center; 
-            font-family: 'Noto Sans KR', sans-serif; /* 입력창도 고딕 */
+            font-family: 'Noto Sans KR', sans-serif; 
             font-weight: bold;
             width: 70%; margin-bottom: 10px;
         }
@@ -198,7 +193,7 @@
             border-collapse: collapse;
             font-size: 18px;
             color: #333;
-            font-family: 'Noto Sans KR', sans-serif; /* 랭킹도 잘 보이게 고딕 */
+            font-family: 'Noto Sans KR', sans-serif;
         }
         .rank-table th { background: #ffecb3; padding: 8px; border-bottom: 2px solid #ffca28; color: #ff6f00; font-family: 'Jua', sans-serif; }
         .rank-table td { padding: 8px; border-bottom: 1px solid #eee; font-weight: 500; }
