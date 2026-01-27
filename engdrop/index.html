@@ -2,278 +2,351 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"> 
-    <title>아기 공룡의 맛있는 영단어</title>
-    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Jua&family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Dino Word Drop</title>
+    <link href="https://fonts.googleapis.com/css2?family=Jua&family=Fredoka:wght@600&display=swap" rel="stylesheet">
     <style>
-        * { box-sizing: border-box; touch-action: none; user-select: none; -webkit-user-select: none; }
-
-        body { 
-            font-family: 'Noto Sans KR', sans-serif; 
-            background-color: #81d4fa; 
-            margin: 0; 
-            padding: 0; 
-            height: 100dvh; 
-            overflow: hidden; 
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /* 스크롤 방지 */
+            background: linear-gradient(to bottom, #87CEEB, #E0F7FA); /* 하늘 배경 */
+            font-family: 'Jua', sans-serif;
+            touch-action: none; /* 모바일 터치 확대 방지 */
+            user-select: none;
+            -webkit-user-select: none;
+            width: 100vw;
+            height: 100vh;
         }
 
-        /* 게임 배경 */
-        .game-container {
-            position: relative;
-            width: 100%;
-            max-width: 600px;
-            height: 100%;
-            background: linear-gradient(180deg, #b3e5fc 0%, #e1f5fe 80%, #aed581 80%, #7cb342 100%);
-            overflow: hidden;
-            box-shadow: 0 0 20px rgba(0,0,0,0.2);
-        }
-
-        /* 상단 정보바 */
-        .hud-bar {
+        /* UI 상단 */
+        .header-ui {
             position: absolute;
-            top: 0; left: 0; width: 100%;
-            padding: 15px;
+            top: 20px;
+            width: 100%;
             display: flex;
             justify-content: space-between;
-            font-size: 24px;
-            color: #3e2723;
-            font-weight: 900; 
-            z-index: 100;
-            text-shadow: 2px 2px 0 #fff;
-            font-family: 'Jua', sans-serif; 
-        }
-
-        .home-btn-small {
-            font-size: 16px;
-            background: #fff;
-            border: 2px solid #3e2723;
-            border-radius: 15px;
-            padding: 5px 10px;
-            cursor: pointer;
-            margin-left: 10px;
-            font-family: 'Jua', sans-serif;
-        }
-
-        /* 타겟 단어 표시 */
-        .target-box {
-            position: absolute;
-            top: 60px; left: 50%;
-            transform: translateX(-50%);
-            background: rgba(255, 255, 255, 0.95);
-            padding: 15px 30px;
-            border-radius: 20px;
-            border: 4px solid #ff6f00;
-            text-align: center;
-            z-index: 90;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            min-width: 260px;
-        }
-        .target-word {
-            font-family: 'Noto Sans KR', sans-serif;
-            font-weight: 900; 
-            font-size: 38px;
-            color: #d84315;
-            margin: 5px 0 0 0;
-            word-break: keep-all;
-            line-height: 1.2;
-        }
-        .target-label {
-            font-size: 16px;
-            color: #555;
-            margin: 0;
-            font-weight: 700;
+            padding: 0 30px;
+            font-size: 28px;
+            color: #5D4037;
+            box-sizing: border-box;
+            z-index: 10;
+            text-shadow: 2px 2px 0px rgba(255,255,255,0.5);
         }
 
         /* 플레이어 (공룡) */
         #player {
             position: absolute;
-            bottom: 30px;
+            bottom: 20px; /* 바닥에서 약간 띄움 */
+            width: 120px; /* 꼬리 판정을 위해 너비 확대 */
+            height: 100px;
+            font-size: 80px;
+            text-align: center;
+            line-height: 100px;
             left: 50%;
-            width: 80px;
-            height: 80px;
-            transform: translateX(-50%);
-            transition: left 0.1s linear; 
-            z-index: 50;
+            transform: translateX(-50%); /* 정확한 중앙 정렬 */
+            z-index: 5;
+            /* 테스트용 테두리 (실제 적용시엔 제거됨) */
+            /* border: 1px solid red; */
         }
-        #player img { width: 100%; height: 100%; object-fit: contain; }
 
-        /* 떨어지는 고기 */
-        .food {
+        /* 떨어지는 단어 */
+        .falling-item {
             position: absolute;
-            width: 100px;
-            height: 70px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 40;
-        }
-        .food img {
-            position: absolute;
-            width: 100%; height: 100%;
-            object-fit: contain;
-            z-index: -1;
-        }
-        .food span {
-            z-index: 1;
-            background: rgba(0,0,0,0.7); 
-            color: #fff;
-            padding: 4px 10px;
-            border-radius: 6px;
+            background-color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            border: 4px solid #FF9800;
+            font-family: 'Fredoka', sans-serif;
+            font-weight: bold;
+            color: #333;
+            font-size: 24px;
+            box-shadow: 0 5px 0 rgba(0,0,0,0.1);
             white-space: nowrap;
-            font-family: 'Noto Sans KR', sans-serif; 
-            font-size: 20px; 
-            font-weight: 700;
-            text-shadow: 1px 1px 2px #000; 
+            transform: translateX(-50%); /* 아이템도 중앙 기준 정렬 */
+            z-index: 4;
         }
 
-        /* 컨트롤 영역 */
-        .controls {
-            position: absolute;
-            bottom: 0; left: 0; width: 100%; height: 100%;
-            display: flex;
-            z-index: 200;
+        /* 나쁜 단어 (똥, 불 등) */
+        .bad-item {
+            border-color: #555;
+            background-color: #eceff1;
+            color: #555;
         }
-        .control-left, .control-right { flex: 1; }
 
-        /* 오버레이 (시작/결과) */
+        /* 전체 화면 덮개 (시작, 게임오버) */
         .overlay {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255,255,255,0.98);
+            background: rgba(255, 255, 255, 0.95);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            z-index: 300;
+            z-index: 100;
             text-align: center;
-            overflow-y: auto; 
         }
-        .hidden { display: none !important; }
 
-        h1 { font-family: 'Jua', sans-serif; }
+        .title { font-size: 50px; color: #5D4037; margin-bottom: 20px; }
+        .desc { font-size: 22px; color: #666; margin-bottom: 40px; line-height: 1.5; }
 
-        .btn {
-            background: #ff6f00; color: white;
-            border: none; padding: 12px 30px;
-            font-size: 22px; border-radius: 50px;
+        .game-btn {
+            background: #FF9800;
+            color: white;
+            border: none;
+            padding: 15px 50px;
+            font-size: 28px;
+            border-radius: 50px;
             font-family: 'Jua', sans-serif;
             cursor: pointer;
-            box-shadow: 0 5px 0 #bf360c;
-            margin: 10px;
+            box-shadow: 0 8px 0 #E65100;
+            transition: transform 0.1s;
         }
-        .btn:active { transform: translateY(5px); box-shadow: none; }
-        
-        .btn-home { background: #8d6e63; box-shadow: 0 5px 0 #5d4037; }
+        .game-btn:active { transform: translateY(4px); box-shadow: 0 4px 0 #E65100; }
 
-        input[type="text"] {
-            padding: 10px; font-size: 22px; border: 3px solid #ffca28;
-            border-radius: 10px; text-align: center; 
-            font-family: 'Noto Sans KR', sans-serif; 
-            font-weight: bold;
-            width: 70%; margin-bottom: 10px;
-        }
-
-        .radio-group { margin: 15px 0; font-size: 18px; font-family: 'Jua', sans-serif; }
-        .radio-group label { margin: 0 5px; cursor: pointer; }
-        input[type="radio"] { transform: scale(1.3); margin-right: 3px; }
-
-        /* 명예의 전당 */
-        .rank-box {
-            width: 90%;
-            margin-top: 20px;
-            border-top: 2px dashed #ccc;
-            padding-top: 15px;
-        }
-        .rank-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 18px;
-            color: #333;
-            font-family: 'Noto Sans KR', sans-serif;
-        }
-        .rank-table th { background: #ffecb3; padding: 8px; border-bottom: 2px solid #ffca28; color: #ff6f00; font-family: 'Jua', sans-serif; }
-        .rank-table td { padding: 8px; border-bottom: 1px solid #eee; font-weight: 500; }
-        .rank-1 { color: #ff6f00; font-weight: bold; }
-
-        @media (max-width: 600px) {
-            .target-word { font-size: 32px; }
-            .food { width: 80px; height: 60px; }
-            .food span { font-size: 16px; }
-            #player { width: 70px; height: 70px; bottom: 20px; }
-        }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
-    <div class="game-container">
-        <div class="hud-bar">
-            <div>
-                <span>❤️ <span id="life-display">5</span></span>
-                <button class="home-btn-small" onclick="goHome()">🏠</button>
-            </div>
-            <span id="score-display" style="color:#d84315;">0점</span>
+    <div id="start-screen" class="overlay">
+        <div class="title">🦕 공룡 영단어</div>
+        <div style="font-size: 100px; margin-bottom: 20px;">🦖</div>
+        <div class="desc">
+            화면 <b>왼쪽</b>을 누르면 왼쪽으로,<br>
+            <b>오른쪽</b>을 누르면 오른쪽으로 가요!<br>
+            (가만히 있어도 닿으면 먹어집니다)
         </div>
-
-        <div class="target-box">
-            <p class="target-label">이 뜻의 영단어를 먹어!</p>
-            <h2 id="current-word" class="target-word">준비?</h2>
-        </div>
-
-        <div id="player">
-            <img src="dino.png" alt="공룡" onerror="this.src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Animals/T-Rex.png'">
-        </div>
-
-        <div id="food-container"></div>
-
-        <div class="controls">
-            <div class="control-left" id="btn-left"></div>
-            <div class="control-right" id="btn-right"></div>
-        </div>
-
-        <div id="intro-screen" class="overlay">
-            <div style="margin-top: 50px;">
-                <img src="dino.png" style="width:100px; margin-bottom:10px;" onerror="this.src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Animals/T-Rex.png'">
-                <h1 style="color:#e65100; font-size:36px; margin:0;">아기 공룡의<br>맛있는 영단어</h1>
-                <p style="color:#555; font-size:16px;">한글 뜻을 보고 영단어를 먹자!</p>
-                
-                <input type="text" id="username" placeholder="이름을 입력하세요" maxlength="8">
-                
-                <div class="radio-group">
-                    <label><input type="radio" name="level" value="1-2" checked>초급</label>
-                    <label><input type="radio" name="level" value="3-4">중급</label>
-                    <label><input type="radio" name="level" value="5-6">고급</label>
-                    <label><input type="radio" name="level" value="중1">심화</label>
-                </div>
-
-                <button class="btn" onclick="startGame()">잘 먹겠습니다! ▶</button>
-            </div>
-
-            <div class="rank-box">
-                <h3 style="margin: 0 0 10px 0; color: #d84315; font-family: 'Jua', sans-serif;">🏆 명예의 전당</h3>
-                <table class="rank-table" id="ranking-table">
-                    <tr><td colspan="3">기록을 불러오는 중...</td></tr>
-                </table>
-            </div>
-        </div>
-
-        <div id="result-screen" class="overlay hidden">
-            <img src="dino.png" style="width:120px;" onerror="this.src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Animals/T-Rex.png'">
-            <h1 style="color:#d84315; margin: 10px 0;">배불러요! 🍖</h1>
-            <h2 id="final-score" style="font-size:50px; margin:20px 0; font-family: 'Jua', sans-serif;">0점</h2>
-            <p id="final-msg" style="font-size: 22px; font-weight:bold;">참 잘했어요!</p>
-            
-            <div>
-                <button class="btn" onclick="location.reload()">🔄 재도전</button>
-                <button class="btn btn-home" onclick="goHome()">🏠 처음으로</button>
-            </div>
-        </div>
+        <button class="game-btn" onclick="startGame()">게임 시작 ▶</button>
     </div>
 
-    <script src="my_word_data.js"></script> 
-    <script src="script.js"></script> 
+    <div class="header-ui">
+        <span>❤️ <span id="lives">3</span></span>
+        <span>⭐ <span id="score">0</span></span>
+    </div>
+
+    <div id="player">🦖</div>
+
+    <div id="game-over-screen" class="overlay hidden">
+        <h1 style="font-size: 50px; color: #D32F2F; margin-bottom: 10px;">게임 오버!</h1>
+        <div style="font-size: 80px; margin: 20px;">💀</div>
+        <h2 style="font-size: 35px; color: #5D4037;">점수: <span id="final-score">0</span>점</h2>
+        <button class="game-btn" onclick="startGame()">🔄 다시 하기</button>
+    </div>
+
+    <script>
+        // === [1] 데이터 설정 ===
+        const words = [
+            "Apple", "Banana", "Cat", "Dog", "Egg", "Fish", "Good", "Hat", "Ice", "Jam",
+            "King", "Love", "Mom", "No", "Orange", "Pig", "Queen", "Red", "Sun", "Tree",
+            "Up", "Van", "Water", "Box", "Yes", "Zoo", "Book", "Desk", "Pen", "Car",
+            "Sky", "Blue", "Run", "Jump", "Happy", "Sad", "Big", "Small", "Hot", "Cold"
+        ];
+        const badItems = ["💩", "🔥", "💣", "⚡"];
+
+        // === [2] 게임 변수 ===
+        let isPlaying = false;
+        let score = 0;
+        let lives = 3;
+        let playerX = 50; // 위치 (%)
+        let moveDirection = 0; // -1: 좌, 0: 정지, 1: 우
+        const playerSpeed = 1.5; // 이동 속도
+
+        let gameInterval;
+        let dropInterval;
+        let items = [];
+        let dropSpeed = 0.5; // 낙하 속도
+
+        // === [3] DOM 요소 ===
+        const player = document.getElementById('player');
+        const scoreEl = document.getElementById('score');
+        const livesEl = document.getElementById('lives');
+
+        // === [4] 오디오 효과음 ===
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playSound(type) {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain); gain.connect(audioCtx.destination);
+
+            if (type === 'eat') { // 띠링 (정답)
+                osc.type = 'sine'; 
+                osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.1);
+            } else if (type === 'hit') { // 퍽 (오답)
+                osc.type = 'sawtooth'; 
+                osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.3);
+            }
+        }
+
+        // ============================================
+        // ★ [핵심 1] 모바일 터치 슬라이드 (부드러운 이동)
+        // ============================================
+        function handleTouch(e) {
+            if (!isPlaying) return;
+            e.preventDefault(); // 스크롤 방지
+
+            const touch = e.touches[0];
+            const screenWidth = window.innerWidth;
+
+            if (touch.clientX < screenWidth / 2) {
+                moveDirection = -1; // 왼쪽
+                player.style.transform = "translateX(-50%) scaleX(-1)"; // 좌우 반전
+            } else {
+                moveDirection = 1;  // 오른쪽
+                player.style.transform = "translateX(-50%) scaleX(1)";
+            }
+        }
+
+        document.addEventListener('touchstart', handleTouch, { passive: false });
+        document.addEventListener('touchmove', handleTouch, { passive: false });
+        document.addEventListener('touchend', () => { moveDirection = 0; });
+
+        // PC 키보드 지원
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') { moveDirection = -1; player.style.transform = "translateX(-50%) scaleX(-1)"; }
+            if (e.key === 'ArrowRight') { moveDirection = 1; player.style.transform = "translateX(-50%) scaleX(1)"; }
+        });
+        document.addEventListener('keyup', () => { moveDirection = 0; });
+
+        // ============================================
+        // ★ [핵심 2] 게임 로직 (충돌 판정 개선)
+        // ============================================
+        function startGame() {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+
+            isPlaying = true;
+            score = 0;
+            lives = 3;
+            dropSpeed = 0.5;
+            playerX = 50;
+            moveDirection = 0;
+            
+            // 기존 아이템 싹 지우기
+            items.forEach(item => item.el.remove());
+            items = [];
+
+            updateUI();
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('game-over-screen').classList.add('hidden');
+
+            // 게임 루프 시작
+            clearInterval(gameInterval);
+            clearInterval(dropInterval);
+            gameInterval = setInterval(gameLoop, 16); // 60fps
+            dropInterval = setInterval(createItem, 1000);
+        }
+
+        function gameLoop() {
+            if (!isPlaying) return;
+
+            // 1. 공룡 이동
+            if (moveDirection !== 0) {
+                playerX += moveDirection * playerSpeed;
+                if (playerX < 10) playerX = 10;
+                if (playerX > 90) playerX = 90;
+                player.style.left = playerX + '%';
+            }
+
+            // 2. 아이템 이동 및 충돌 체크 (★역순 반복문 사용: 스킵 방지★)
+            for (let i = items.length - 1; i >= 0; i--) {
+                let item = items[i];
+                item.y += item.speed;
+                item.el.style.top = item.y + '%';
+
+                // 바닥에 닿으면 삭제
+                if (item.y > 100) {
+                    item.el.remove();
+                    items.splice(i, 1);
+                    continue;
+                }
+
+                // ★ [핵심 3] 충돌 범위 대폭 확대 (가만히 있어도 맞게 수정) ★
+                // Y축: 75% ~ 100% (공룡 머리 위부터 바닥까지 넉넉하게)
+                // X축: 거리 22% 이내 (꼬리까지 넉넉하게 커버)
+                if (item.y > 75 && item.y < 100) {
+                    const itemX = parseFloat(item.el.style.left);
+                    const dist = Math.abs(playerX - itemX);
+
+                    if (dist < 22) { // 판정 범위 22로 확대
+                        handleCollision(item, i);
+                    }
+                }
+            }
+        }
+
+        function createItem() {
+            if (!isPlaying) return;
+
+            const el = document.createElement('div');
+            el.classList.add('falling-item');
+            
+            const isBad = Math.random() < 0.2;
+            let type = 'good';
+
+            if (isBad) {
+                el.innerText = badItems[Math.floor(Math.random() * badItems.length)];
+                el.classList.add('bad-item');
+                type = 'bad';
+            } else {
+                el.innerText = words[Math.floor(Math.random() * words.length)];
+            }
+
+            // 위치 랜덤 (가장자리 너무 붙지 않게 10~90%)
+            const startX = Math.random() * 80 + 10;
+            el.style.left = startX + '%';
+            el.style.top = '-10%';
+            document.body.appendChild(el);
+
+            items.push({
+                el: el,
+                y: -10,
+                speed: dropSpeed + Math.random() * 0.3,
+                type: type
+            });
+        }
+
+        function handleCollision(item, index) {
+            // 맞으면 바로 삭제
+            item.el.remove();
+            items.splice(index, 1);
+
+            if (item.type === 'good') {
+                score += 10;
+                playSound('eat');
+                if (score % 50 === 0) dropSpeed += 0.1; // 난이도 상승
+            } else {
+                lives--;
+                playSound('hit');
+                player.innerText = "😵";
+                setTimeout(() => player.innerText = "🦖", 500);
+            }
+
+            updateUI();
+
+            if (lives <= 0) {
+                endGame();
+            }
+        }
+
+        function updateUI() {
+            scoreEl.innerText = score;
+            livesEl.innerText = lives;
+        }
+
+        function endGame() {
+            isPlaying = false;
+            clearInterval(gameInterval);
+            clearInterval(dropInterval);
+            document.getElementById('final-score').innerText = score;
+            document.getElementById('game-over-screen').classList.remove('hidden');
+        }
+    </script>
 </body>
 </html>
